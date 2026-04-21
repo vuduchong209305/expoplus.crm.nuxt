@@ -1,0 +1,27 @@
+{
+  "name": "expoplus-crm-nuxt",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@pinia/nuxt": "^0.11.3",
+    "@tabler/icons-webfont": "^3.41.1",
+    "flatpickr": "^4.6.13",
+    "nuxt": "^4.4.2",
+    "ofetch": "^1.5.1",
+    "simplebar-vue": "^2.4.2",
+    "sweetalert2": "^11.26.24",
+    "vue": "^3.5.32",
+    "vue-router": "^5.0.4",
+    "vue-sonner": "^2.0.9",
+    "vue3-apexcharts": "^1.11.1",
+    "vuedraggable": "^4.1.0"
+  }
+}
