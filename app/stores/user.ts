@@ -6,7 +6,7 @@ export const useUserStore = defineStore('user', {
         async fetch() {
             try {
                 const response = await useNuxtApp().$apiFetch('me');
-                if(response?.message == "Unauthenticated")
+                if(response?.message == "Vui lòng đăng nhập lại")
                     useLoginStore().logout();
 
                 this.user = response?.data;

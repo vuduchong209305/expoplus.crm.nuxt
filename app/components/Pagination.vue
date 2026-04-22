@@ -22,7 +22,7 @@
                         <!-- Ellipsis -->
                         <span v-if="page === '...'" class="px-2 text-gray-400"> ... </span>
                         <!-- Page -->
-                        <button v-else @click="changePage(page)" class="h-10 w-10 flex items-center justify-center aspect-square transition" :class="page === currentPage
+                        <button v-else @click="changePage(page)" type="button" class="h-10 w-10 flex items-center justify-center aspect-square transition" :class="page === currentPage
               ? 'text-indigo-500 border border-indigo-200 rounded-full bg-indigo-50'
               : 'hover:bg-gray-100 rounded-full'">
                             {{ page }}
@@ -88,9 +88,9 @@
 
         emit('page-change', page)
 
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        })
+        // window.scrollTo({
+        //     top: 0,
+        //     behavior: 'smooth'
+        // })
     }
 </script>

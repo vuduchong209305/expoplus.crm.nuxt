@@ -14,6 +14,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
             options.headers = {
                 ...options.headers,
+                credentials: 'include',
                 Authorization: `Bearer ${useAuthCookie()?.value}`,
                 Accept: 'application/json',
                 ...(isFormData ? {} : {

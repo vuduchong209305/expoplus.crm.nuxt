@@ -62,14 +62,14 @@
     <div class="fixed bottom-0 left-0 right-0 bg-white border-t px-4 py-3">
         
         <form @submit.prevent="addTask" class="max-w-2xl mx-auto flex items-center gap-2">
-            <input v-model="newTask" placeholder="Thêm công việc mới..." class="flex-1 px-4 py-2 border rounded-lg border-indigo-500 focus:outline-none focus:border-indigo-700" required />
+            <input v-model="newTask" placeholder="Thêm công việc mới..." class="flex-1 px-4 py-2 border rounded-lg border-indigo-500 focus:outline-none focus:border-indigo-700" autofocus required />
             <button type="submit" class="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 active:scale-95 transition"><i class="ti ti-circle-plus"></i>&nbsp;&nbsp;Thêm </button>
         </form>
      
     </div>
 
     <Offcanvas :open="open" @close="open = false">
-        <TaskDetail :task="selectedTask" @deleted="handleDeleted" @saved="handleSaved" @close="closeCanvas"/>
+        <ToDoDetail :task="selectedTask" @deleted="handleDeleted" @saved="handleSaved" @close="closeCanvas"/>
     </Offcanvas>
 
 </template>
@@ -112,7 +112,7 @@
     const addTask = async () => {
         if (!newTask.value.trim()) return
 
-        const res = await useNuxtApp().$apiFetch(`task/store`, {
+        const res = await useNuxtApp().$apiFetch(`todo/store`, {
             method: 'POST',
             body: {
                 title : newTask.value
@@ -137,7 +137,7 @@
     }
 
     const toggleTask = async (task) => {
-        const res = await useNuxtApp().$apiFetch(`task/completed`, {
+        const res = await useNuxtApp().$apiFetch(`todo/completed`, {
             method: 'POST',
             body: {
                 id: task.id
@@ -155,7 +155,7 @@
     }
 
     async function toggleStar(task) {
-        const res = await useNuxtApp().$apiFetch(`task/bookmark`, {
+        const res = await useNuxtApp().$apiFetch(`todo/bookmark`, {
             method: 'POST',
             body: {
                 id: task.id
@@ -174,7 +174,7 @@
 
     async function openTask(id) {
 
-        const res = await useNuxtApp().$apiFetch(`task/detail`, {
+        const res = await useNuxtApp().$apiFetch(`todo/detail`, {
             params: {
                 id: id
             }
@@ -193,7 +193,7 @@
 
     async function fetch(page = 1) {
 
-        const res = await useNuxtApp().$apiFetch(`task?page=${page}`)
+        const res = await useNuxtApp().$apiFetch(`todo?page=${page}`)
 
         if (res.status) {
             tasks.value = res.data.data

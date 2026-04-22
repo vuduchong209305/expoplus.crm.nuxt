@@ -17,7 +17,7 @@
                 	<p class="text-sm text-gray-500 mt-0.5">{{ customer?.company }}</p>
 			    </div>
             </div>
-            <div>
+            <div class="flex items-center justify-between gap-5">
             	<a href="javascript:;" @click="bookmark(customer?.id)" class="inline-block">
                     <svg v-if="customer?.bookmark == 1" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-star text-yellow-500">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -25,8 +25,21 @@
                     </svg>
                     <i v-else class="ti ti-star text-gray-400 text-lg hover:text-yellow-500"></i>
                 </a>
-                &nbsp;&nbsp;
-            	<button class="px-6 py-2 active:scale-95 transition bg-indigo-500 rounded text-white shadow-lg shadow-indigo-500/30 text-sm font-medium">Tác vụ&nbsp;&nbsp;<i class="ti ti-chevron-down"></i></button>
+            	
+            	<div class="dropdown relative inline-block w-24 text-sm">
+				    <!-- BUTTON -->
+				    <button class="dropdown-btn px-4 py-2 bg-indigo-500 text-white rounded shadow flex items-center justify-between w-full"> Tác vụ <i class="ti ti-chevron-down"></i>
+				    </button>
+				    <!-- DROPDOWN -->
+				    <ul class="dropdown-menu hidden absolute right-0 top-full mt-2 w-40 bg-white border border-gray-300 rounded shadow-md py-1 z-50">
+				        <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm" @click="handleCreate">
+				            <i class="ti ti-calendar"></i>&nbsp;&nbsp;Tạo lịch
+				        </li>
+				        <li class="px-4 py-2 hover:bg-red-500/10 text-red-500 cursor-pointer text-sm" @click="deleteItem(customer?.id)">
+				            <i class="ti ti-trash"></i>&nbsp;&nbsp;Xóa
+				        </li>
+				    </ul>
+				</div>
             </div>
             
         </div>
@@ -313,6 +326,9 @@
 </template>
 
 <script setup lang='ts'>
+
+	import Swal from 'sweetalert2'
+
 	definePageMeta({
         middleware: ['auth'],
     });
@@ -436,6 +452,42 @@
                 description: res.message
             })
         }
+    }
+
+    async function deleteItem(id) {
+        Swal.fire({
+            title: "Xóa dữ liệu",
+            text: "Bạn chắc chắn muốn xóa dữ liệu này",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Đóng"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const res = await useNuxtApp().$apiFetch(`customer/delete`, {
+                    method: 'POST',
+                    body: {
+                        id
+                    }
+                })
+
+                if (res.status) {
+                    notify.success({
+                        title: 'Thông báo',
+                        description: res.message
+                    })
+
+                    navigateTo('/customer/lead')
+                } else {
+                    notify.error({
+                        title: 'Thông báo',
+                        description: res.message
+                    })
+                }
+            }
+        });
     }
 
     // Upload Avatar

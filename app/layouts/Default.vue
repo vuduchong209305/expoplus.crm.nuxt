@@ -27,10 +27,10 @@
                 </button>
                 <!-- Center Nav Links -->
                 <nav class="hidden lg:flex items-center gap-1 ml-4">
-                    <a href="/pages/" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Home</a>
-                    <a href="/pages/buttons.html" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Components</a>
-                    <a href="/pages/alert.html" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Alerts</a>
-                    <a href="/pages/email.html" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Email</a>
+                    <NuxtLink to="/" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Ngày của tôi</NuxtLink>
+                    <NuxtLink to="/calendar" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Lịch của tôi</NuxtLink>
+                    <NuxtLink to="/marketing/campaign" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Chiến dịch</NuxtLink>
+                    <a href="#" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Hợp đồng</a>
                 </nav>
                 <!-- Right Actions -->
                 <div class="flex items-center gap-1 sm:gap-2 ml-auto">
@@ -93,21 +93,21 @@
             <nav>
                 <div v-for="menu in menus" :key="menu.name">
                     <!-- MENU KHÔNG CÓ CHILD -->
-                    <NuxtLink v-if="!menu.children" :to="menu.to" class="flex items-center px-6 h-11 transition hover:bg-gray-100" :class="{ 'bg-gray-100 text-indigo-600': isActive(menu.to) }">
-                        <i :class="menu.icon" class="text-xl"></i>
+                    <NuxtLink v-if="!menu.children" :to="menu.to" class="flex items-center px-6 h-11 transition hover:bg-gray-100 text-gray-700" :class="{ 'bg-gray-100 text-indigo-700': isActive(menu.to) }">
+                        <i :class="menu.icon" class="text-md"></i>
                         <span class="ml-3 font-medium">{{ menu.name }}</span>
                     </NuxtLink>
                     <!-- MENU CÓ CHILD -->
                     <div v-else>
                         <!-- PARENT -->
-                        <button @click="openMenu = openMenu === menu.name ? null : menu.name" class="w-full flex items-center px-6 h-11 hover:bg-gray-100" :class="{ 'text-indigo-600': openMenu === menu.name }">
-                            <i :class="menu.icon" class="text-xl"></i>
+                        <button @click="openMenu = openMenu === menu.name ? null : menu.name" class="w-full flex items-center px-6 h-11 hover:bg-gray-100 text-gray-700" :class="{ 'text-indigo-700': openMenu === menu.name }">
+                            <i :class="menu.icon" class="text-md"></i>
                             <span class="ml-3 flex-1 text-left font-medium">{{ menu.name }}</span>
                             <i class="ti ti-chevron-down transition" :class="{ 'rotate-180': openMenu === menu.name }"></i>
                         </button>
                         <!-- CHILD -->
                         <div v-show="openMenu === menu.name" class="ml-5">
-                            <NuxtLink v-for="child in menu.children" :key="child.to" :to="child.to" class="block px-4 py-2 text-sm hover:bg-gray-100 rounded" :class="{ 'text-indigo-600 font-medium': isActive(child.to) }">
+                            <NuxtLink v-for="child in menu.children" :key="child.to" :to="child.to" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded" :class="{ 'text-indigo-700 font-medium': isActive(child.to) }">
                                 <i class="ti ti-point"></i>&nbsp;{{ child.name }}
                             </NuxtLink>
                         </div>
@@ -134,6 +134,16 @@
             to: '/',
         },
         {
+            name: 'Check list',
+            icon: 'ti ti-list-check',
+            to: '/task',
+        },
+        {
+            name: 'Lịch của tôi',
+            icon: 'ti ti-calendar',
+            to: '/calendar',
+        },
+        {
             name: 'Khách hàng',
             icon: 'ti ti-mail',
             children: [
@@ -150,7 +160,21 @@
                     to: '/customer/create'
                 }
             ]
-        }
+        },
+        {
+            name: 'Tiếp thị',
+            icon: 'ti ti-speakerphone',
+            children: [
+                {
+                    name: 'Chiến dịch',
+                    to: '/marketing/campaign'
+                },
+                {
+                    name: 'Nhóm khách hàng',
+                    to: '/marketing/customers'
+                }
+            ]
+        },
     ]
 
     onMounted(() => {
