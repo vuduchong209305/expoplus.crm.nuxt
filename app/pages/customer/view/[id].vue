@@ -35,6 +35,9 @@
 				        <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm" @click="handleCreate">
 				            <i class="ti ti-calendar"></i>&nbsp;&nbsp;Tạo lịch
 				        </li>
+				        <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm" @click="open = true">
+				            <i class="ti ti-library-plus"></i>&nbsp;&nbsp;Thêm vào nhóm
+				        </li>
 				        <li class="px-4 py-2 hover:bg-red-500/10 text-red-500 cursor-pointer text-sm" @click="deleteItem(customer?.id)">
 				            <i class="ti ti-trash"></i>&nbsp;&nbsp;Xóa
 				        </li>
@@ -323,6 +326,10 @@
 			</div>
 	    </div>
 	</div>
+
+	<Offcanvas :open="open" @close="open = false">
+        <Group :customer_id="customer.id"/>
+    </Offcanvas>
 </template>
 
 <script setup lang='ts'>
@@ -345,6 +352,7 @@
 	const customer = ref({});
 	const assignedTo = ref([]);
 	const sources = ref([]);
+	const open = ref(false)
 
 	const { id } = useRoute().params
 

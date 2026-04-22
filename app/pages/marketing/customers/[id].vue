@@ -2,7 +2,7 @@
 	<div class="bg-white border-b px-4 sm:px-6 py-4 sm:py-3">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-                <h1 class="text-lg sm:text-xl font-semibold">Thêm nhóm khách hàng</h1>
+                <h1 class="text-lg sm:text-xl font-semibold">{{ isEdit ? 'Chỉnh sửa nhóm khách hàng' : 'Thêm nhóm khách hàng' }}</h1>
                 <p class="text-sm text-gray-500 mt-0.5">Danh sách các nhóm khách hàng</p>
             </div>
         </div>
@@ -97,6 +97,9 @@
 	const customers = ref([])
 	const selected = ref([])
 	const route = useRoute()
+	const id = route.params.id
+	
+	const isEdit = computed(() => id && id !== 'create')
 
 	const pagination = ref({
         current_page: 1,
@@ -108,6 +111,22 @@
 	onMounted(() => {
     	fetch()
     });
+
+    onMounted(async () => {
+	    if (isEdit.value) {
+	        const res = await useNuxtApp().$apiFetch(`customer-group/detail`, {
+	            params: {
+	                id
+	            }
+	        })
+
+	        if (res.status) {
+	            title.value = res.data.title
+	            note.value = res.data.note
+	            selected.value = res.data.customers
+	        }
+	    }
+	})
 
 	// 🔥 auto fetch khi filter đổi
     watch(
@@ -162,9 +181,11 @@
 	}
 
 	async function submit() {
-		const res = await useNuxtApp().$apiFetch(`customer-group/store`, {
+
+		const res = await useNuxtApp().$apiFetch(`customer-group/save`, {
             method: 'POST',
             body: {
+            	id: isEdit.value ? id : null,
                 title: title.value,
                 note: note.value,
                 customers: selected.value.map(i => i.id)

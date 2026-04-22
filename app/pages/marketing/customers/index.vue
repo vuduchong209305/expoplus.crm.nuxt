@@ -48,7 +48,7 @@
                         </td>
 
                         <td class="p-3">
-                            <span class="text-gray-500 text-sm">{{ item?.title }}</span>
+                            <NuxtLink :to="`/marketing/customers/${item.id}`" class="text-indigo-600 text-sm hover:font-medium">{{ item?.title }}</NuxtLink>
                         </td>
 
                         <td class="p-3">
@@ -56,7 +56,7 @@
                         </td>
 
                         <td class="p-3">
-                            <span class="text-gray-500 text-sm">{{ item?.customer_details_count }}</span>
+                            <span class="text-gray-500 text-sm">{{ item?.detail_count }}</span>
                         </td>
 
                         <td class="p-3">
