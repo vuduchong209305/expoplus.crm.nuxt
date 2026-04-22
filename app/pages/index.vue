@@ -7,7 +7,6 @@
                 <p class="text-sm text-gray-500 mt-0.5"> Hôm nay, {{ formattedDate }}
                 </p>
             </div>
-            <button class="px-4 py-2 text-sm font-medium bg-white text-black border border-gray-500 rounded-lg hover:bg-black hover:text-white active:scale-95 transition-all"> View Profile </button>
         </div>
     </div>
     <!-- CONTENT -->
@@ -260,4 +259,8 @@
                 return 'text-gray-500'
         }
     }
+
+    useHead(() => ({
+        title: 'Ngày của tôi'
+    }))
 </script>

@@ -186,4 +186,8 @@
             })
         }
     }
+
+    useHead(() => ({
+        title: 'Thêm khách hàng'
+    }))
 </script>

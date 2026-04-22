@@ -19,4 +19,10 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
         '@nuxtjs/tailwindcss'
     ],
+    app: {
+        head: {
+            title: 'Admin',
+            titleTemplate: '%s | Expoplus CRM'
+        }
+    }
 })

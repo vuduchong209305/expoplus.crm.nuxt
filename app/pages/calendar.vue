@@ -195,4 +195,8 @@
 		d.setMinutes(d.getMinutes() + mins)
 		return d
 	}
+
+	useHead(() => ({
+        title: 'Lịch của tôi'
+    }))
 </script>

@@ -235,4 +235,8 @@
 	        }
 	    })
 	}
+
+	useHead(() => ({
+        title: 'Nhiệm vụ công việc'
+    }))
 </script>

@@ -34,10 +34,11 @@
                         <th class="p-3 text-left w-12" width="5%">
                             <input type="checkbox" class="w-4 h-4 rounded">
                         </th>
-                        <th class="p-3 text-left font-medium" width="30%">Nhóm khách hàng</th>
-                        <th class="p-3 text-left font-medium" width="35%">Ghi chú</th>
-                        <th class="p-3 text-left font-medium" width="15%">Số lượng KH</th>
-                        <th class="p-3 text-left font-medium" width="15%">Ngày tạo</th>
+                        <th class="p-3 text-sm text-left font-medium" width="20%">Nhóm khách hàng</th>
+                        <th class="p-3 text-sm text-left font-medium" width="40%">Ghi chú</th>
+                        <th class="p-3 text-sm text-left font-medium" width="15%">Số lượng KH</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Ngày tạo</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Ngày cập nhật</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,6 +62,10 @@
 
                         <td class="p-3">
                             <span class="text-gray-500 text-xs">{{ item?.created_at }}</span>
+                        </td>
+
+                        <td class="p-3">
+                            <span class="text-gray-500 text-xs">{{ item?.updated_at }}</span>
                         </td>
 
                     </tr>
@@ -131,4 +136,8 @@
     async function submitSearch() {
         fetch()
     }
+
+    useHead(() => ({
+        title: 'Nhóm khách hàng'
+    }))
 </script>

@@ -315,6 +315,10 @@
         fetch()
     }
 
+    useHead(() => ({
+        title: type?.value == 'lead' ? 'Danh sách Lead' : 'Danh sách Contact'
+    }))
+
     // 🔥 auto fetch khi filter đổi
     // watch(
     //     [search, filters],

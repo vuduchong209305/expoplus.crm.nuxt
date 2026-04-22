@@ -13,7 +13,7 @@
     	<form @submit.prevent="submit">
 
 	    	<div class="bg-white px-5 py-4 rounded mb-5">
-	    		<h4 class="font-semibold text-lg pb-3">Thông tin chung</h4>
+	    		<h4 class="font-semibold text-md pb-3">Thông tin chung</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label class="block text-sm text-gray-700 font-semibold mb-2">Tên nhóm khách hàng <span class="text-red-500">*</span></label>
@@ -27,7 +27,7 @@
 	    	</div>
 
 	    	<div class="bg-white px-5 py-4 rounded mb-5">
-	    		<h4 class="font-semibold text-lg pb-3">Chọn khách hàng</h4>
+	    		<h4 class="font-semibold text-md pb-3">Chọn khách hàng ({{ availableCustomers.length }})</h4>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
 				    <!-- LEFT: SEARCH + LIST -->
 				    <div class="border rounded-lg p-4">
@@ -42,12 +42,17 @@
 				        <hr class="my-5">
 
 				        <div class="max-h-[400px] overflow-y-auto space-y-2">
-				            <div v-for="item in availableCustomers" :key="item.id" @click="toggleCustomer(item)" class="flex items-center justify-between px-3 py-2 border border-indigo-200 rounded cursor-pointer hover:bg-indigo-50">
-				                <div>
-				                    <div class="text-sm font-medium">{{ item.fullname }}</div>
-				                    <div class="text-xs text-gray-500">{{ item.email }}</div>
-				                </div>
-				                <button type="button" class="text-xs px-2 py-1 rounded bg-indigo-100 text-indigo-600"> + Chọn </button>
+				            <div v-for="item in availableCustomers" :key="item.id" class="flex items-center justify-between px-3 py-2 border border-indigo-200 rounded cursor-pointer hover:bg-indigo-50">
+				            	<div class="flex items-center justify-between">
+				            		<img :src="viewImage(item.avatar)" class="w-10 h-10 rounded-full" :alt="item.fullname">
+				            		&nbsp;&nbsp;
+				            		<div>
+					                    <NuxtLink :to="`/customer/view/${item.id}`" class="text-sm font-medium">{{ item.fullname }}</NuxtLink>
+					                    <div class="text-xs text-gray-500">{{ item.email }}</div>
+					                </div>
+				            	</div>
+				                
+				                <button @click="toggleCustomer(item)" type="button" class="text-xs px-2 py-1 rounded border border-indigo-300 text-indigo-500 hover:bg-indigo-700 hover:text-white transition-all"> <i class="ti ti-copy-plus"></i> </button>
 				            </div>
 				        </div>
 
@@ -65,11 +70,15 @@
 				        <div v-if="selected.length === 0" class="text-sm text-gray-400"> Chưa có khách hàng nào </div>
 				        <div class="max-h-[400px] overflow-y-auto space-y-2">
 				            <div v-for="item in selected" :key="item.id" class="flex items-center justify-between px-3 py-2 border rounded bg-indigo-50">
-				                <div>
-				                    <div class="text-sm font-medium">{{ item.fullname }}</div>
-				                    <div class="text-xs text-gray-500">{{ item.email }}</div>
-				                </div>
-				                <button type="button" @click="removeCustomer(item.id)" class="text-xs px-2 py-1 rounded bg-red-100 text-red-500"> Xóa </button>
+				                <div class="flex items-center justify-between">
+				            		<img :src="viewImage(item.avatar)" class="w-10 h-10 rounded-full" :alt="item.fullname">
+				            		&nbsp;&nbsp;
+				            		<div>
+					                    <NuxtLink :to="`/customer/view/${item.id}`" class="text-sm font-medium">{{ item.fullname }}</NuxtLink>
+					                    <div class="text-xs text-gray-500">{{ item.email }}</div>
+					                </div>
+				            	</div>
+				                <button type="button" @click="removeCustomer(item.id)" class="text-xs px-2 py-1 rounded border border-red-500 text-red-500 hover:bg-red-500 hover:text-white"> <i class="ti ti-trash"></i> </button>
 				            </div>
 				        </div>
 				    </div>
@@ -205,4 +214,8 @@
             })
         }
 	}
+
+	useHead(() => ({
+        title: isEdit.value ? 'Chỉnh sửa nhóm khách hàng' : 'Thêm nhóm khách hàng'
+    }))
 </script>

@@ -620,4 +620,10 @@
 			default: return 'bg-gray-400'
 		}
 	}
+
+	useHead(() => ({
+		title: customer.value?.fullname
+				? `Khách hàng: ${customer.value.fullname}`
+				: 'Thông tin khách hàng'
+	}))
 </script>
