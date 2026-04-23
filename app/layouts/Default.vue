@@ -46,7 +46,7 @@
                     <!-- User Avatar Dropdown -->
                     <div class="relative ml-1 sm:ml-2" id="user-dropdown-container">
                         <button id="user-avatar-btn" class="w-9 h-9 rounded-full bg-gradient-to-br from-orange-400 to-rose-500 cursor-pointer ring-2 ring-background overflow-hidden">
-                            <img src="/assets/images/user1.jpg" alt="User" class="w-full h-full object-cover">
+                            <img :src="viewImage(user?.avatar)" alt="User" class="w-full h-full object-cover">
                         </button>
                         <!-- Dropdown Menu -->
                         <div id="user-dropdown" class="absolute right-0 top-12 w-72 bg-white rounded-xl shadow-xl border border-border z-50 overflow-hidden hidden">
@@ -67,15 +67,9 @@
                             </div>
                             <!-- Menu Items -->
                             <div class="py-2">
-                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-500 hover:bg-muted hover:text-foreground transition-all">
-                                    <span>Public Profile</span>
-                                </a>
-                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-500 hover:bg-muted hover:text-foreground transition-all">
-                                    <span>My Profile</span>
-                                </a>
-                                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-500 hover:bg-muted hover:text-foreground transition-all">
-                                    <span>Dev Forum</span>
-                                </a>
+                                <NuxtLink to="/profile" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-800 hover:bg-gray-100 hover:text-indigo-700 transition-all">
+                                    <span>Hồ sơ</span>
+                                </NuxtLink>
                             </div>
                             
                             <!-- Logout -->
@@ -127,7 +121,7 @@
 
     const route = useRoute()
     const openMenu = ref < string | null > (null)
-
+    const { user } = useAuth()
     const menus = [
         {
             name: 'Ngày của tôi',

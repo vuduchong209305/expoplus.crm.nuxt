@@ -56,7 +56,7 @@
             <div>
                 <button type="button" @click="$emit('close')" class="px-4 py-2 text-sm border rounded-lg hover:bg-gray-100 active:scale-95 transition"> Hủy </button>
                 &nbsp;
-                <button type="submit" class="px-5 py-2 text-sm bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 active:scale-95 transition"> Lưu thay đổi </button>
+                <button type="submit" class="px-5 py-2 text-sm bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 active:scale-95 transition"> Lưu dữ liệu </button>
             </div>
             
         </div>

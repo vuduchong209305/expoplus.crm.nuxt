@@ -7,7 +7,7 @@
 	</div>
 	
 	<Offcanvas :open="open" @close="open = false">
-        <EventDetail :event="selectedEvent" @saved="handleSaved" @close="closeCanvas"/>
+        <EventDetail :event="selectedEvent" @saved="handleSaved" @deleted="handleDeleted" @close="closeCanvas"/>
     </Offcanvas>
 
 </template>
@@ -186,6 +186,11 @@
 	}
 
 	const handleSaved = () => {
+		open.value = false
+		calendarRef.value.getApi().refetchEvents()
+	}
+
+	const handleDeleted = () => {
 		open.value = false
 		calendarRef.value.getApi().refetchEvents()
 	}

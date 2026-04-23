@@ -43,15 +43,26 @@
 	    	<label class="text-xs text-gray-700 mb-1 block">Ghi chú</label>
 	    	<textarea v-model="form.note" rows="3" placeholder="Thêm ghi chú..." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm resize-none focus:outline-none focus:border-indigo-500"></textarea>
 	    </div>
-	    <!-- ACTION -->
-	    <div class="flex items-center justify-end gap-2 pt-4 border-t">
-	        <button type="button" @click="$emit('close')" class="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 active:scale-95 transition"> Hủy </button>
-	        <button type="submit" class="px-5 py-2 text-sm bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 active:scale-95 transition shadow"> Lưu lịch </button>
-	    </div>
+	    <div class="flex items-center justify-between gap-2 pt-2 border-t">
+            <div>
+                <button type="button" @click="deleteItem(form.id)" class="text-red-500 text-xs p-1 border border-red-500 hover:bg-red-500 hover:text-white rounded active:scale-95 transition">
+                    <i class='ti ti-trash'></i>
+                </button>
+            </div>
+            <div>
+                <button type="button" @click="$emit('close')" class="px-4 py-2 text-sm border rounded-lg hover:bg-gray-100 active:scale-95 transition"> Hủy </button>
+                &nbsp;
+                <button type="submit" class="px-5 py-2 text-sm bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 active:scale-95 transition"> Lưu dữ liệu </button>
+            </div>
+            
+        </div>
 	</form>
 </template>
 
 <script setup lang="ts">
+
+	import Swal from 'sweetalert2'
+	
 	const props = defineProps({
         event: Object
     })
@@ -117,4 +128,39 @@
 			form.reminder_minutes = val.reminder_minutes || 0
 		}
 	}, { immediate: true })
+
+	async function deleteItem(id) {
+        Swal.fire({
+            title: "Xóa dữ liệu",
+            text: "Bạn chắc chắn muốn xóa dữ liệu này",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Đóng"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const res = await useNuxtApp().$apiFetch(`event/delete`, {
+                    method: 'POST',
+                    body: {
+                        id
+                    }
+                })
+
+                if (res.status) {
+                    notify.success({
+                        title: 'Thông báo',
+                        description: res.message
+                    })
+                    emit('deleted', form.id)
+                } else {
+                    notify.error({
+                        title: 'Thông báo',
+                        description: res.message
+                    })
+                }
+            }
+        });
+    }
 </script>

@@ -40,11 +40,9 @@
 
     const email = ref('');
     const password = ref('');
-    const isLoading = ref(false)
 
     const handleSubmit = async (e: Event) => {
         e.preventDefault();
-        isLoading.value = true
         try {
             await useLoginStore().login(email.value, password.value);
             
@@ -57,13 +55,11 @@
                 window.location.assign('/')
             }, 1000);
 
-        } catch (err) {
+        } catch (err: any) {
             notify.error({
-                title: 'Thông báo',
-                description: 'Có lỗi xảy ra'
+                title: 'Lỗi',
+                description: err?.message || 'Có lỗi xảy ra'
             });
-        } finally {
-            isLoading.value = false
         }
     };
 </script>

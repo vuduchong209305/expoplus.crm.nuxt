@@ -47,7 +47,7 @@
 				            		<img :src="viewImage(item.avatar)" class="w-10 h-10 rounded-full" :alt="item.fullname">
 				            		&nbsp;&nbsp;
 				            		<div>
-					                    <NuxtLink :to="`/customer/view/${item.id}`" class="text-sm font-medium">{{ item.fullname }}</NuxtLink>
+					                    <NuxtLink :to="`/customer/view/${item.id}`" target="_blank" class="text-sm font-medium">{{ item.fullname }}</NuxtLink>
 					                    <div class="text-xs text-gray-500">{{ item.email }}</div>
 					                </div>
 				            	</div>
@@ -74,7 +74,7 @@
 				            		<img :src="viewImage(item.avatar)" class="w-10 h-10 rounded-full" :alt="item.fullname">
 				            		&nbsp;&nbsp;
 				            		<div>
-					                    <NuxtLink :to="`/customer/view/${item.id}`" class="text-sm font-medium">{{ item.fullname }}</NuxtLink>
+					                    <NuxtLink :to="`/customer/view/${item.id}`" target="_blank" class="text-sm font-medium">{{ item.fullname }}</NuxtLink>
 					                    <div class="text-xs text-gray-500">{{ item.email }}</div>
 					                </div>
 				            	</div>
