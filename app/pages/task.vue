@@ -103,6 +103,10 @@
 
 	import draggable from 'vuedraggable'
 
+	definePageMeta({
+		middleware: ['auth'],
+	})
+	
 	const tasks = ref([])
 	const selectedTask = ref('')
 	const open = ref(false)

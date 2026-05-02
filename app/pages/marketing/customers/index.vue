@@ -15,7 +15,7 @@
             <div class="flex flex-wrap items-center gap-2">
                 
                 <form @submit.prevent="submitSearch" class="relative w-80">
-                    <input v-model="search" placeholder="Tìm tên, email, số điện thoại..." class="w-full pl-3 pr-10 py-2 border border-gray-400 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
+                    <input v-model="search" placeholder="Tìm tên, email, số điện thoại..." class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
                     <!-- BUTTON INSIDE -->
                     <button type="submit" class="absolute right-1 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-indigo-600">
                         <i class="ti ti-search text-lg"></i>

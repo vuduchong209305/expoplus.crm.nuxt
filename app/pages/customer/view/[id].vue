@@ -354,7 +354,7 @@
 	const sources = ref([]);
 	const open = ref(false)
 
-	const { id } = useRoute().params
+	const { id } = route.params
 
 	onMounted(() => {
     	view()

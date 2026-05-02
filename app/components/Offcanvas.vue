@@ -12,7 +12,7 @@
         ]">
                 <!-- Header -->
                 <div class="flex items-center justify-between p-4 border-b">
-                    <h3 class="font-semibold">Xem nhanh</h3>
+                    <h3 class="font-semibold"></h3>
                     <button @click="emit('close')">
                         <i class="ti ti-x"></i>
                     </button>

@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     },
     css: [
         '@tabler/icons-webfont/dist/tabler-icons.min.css',
+        'flatpickr/dist/flatpickr.css',
         '~/assets/css/style.css'
     ],
     modules: [
