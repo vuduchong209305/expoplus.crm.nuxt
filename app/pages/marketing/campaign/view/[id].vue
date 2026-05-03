@@ -24,7 +24,12 @@
                                 <i class="ti ti-edit"></i>&nbsp;&nbsp;Sửa chiến dịch
                             </NuxtLink>
                         </li>
-                        <li class="px-4 py-2 hover:bg-red-500/10 text-red-500 cursor-pointer text-sm" @click="deleteItem(campaign?.id)">
+                        <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm">
+                            <a @click="openReport()" href="javascript:;" class="block w-full">
+                                <i class="ti ti-chart-histogram"></i>&nbsp;&nbsp;Báo cáo
+                            </a>
+                        </li>
+                        <li class="px-4 py-2 hover:bg-red-500/10 text-red-500 cursor-pointer text-sm" @click="deleteCampaign()">
                             <i class="ti ti-trash"></i>&nbsp;&nbsp;Xóa
                         </li>
                     </ul>
@@ -47,8 +52,10 @@
                     </button>
                 </form>
                 
-                <div>
-                    <p class="text-sm"><span class="text-gray-500">Phụ trách: </span><span>{{ campaign?.assigned?.fullname }}</span></p>
+                <div class="text-sm">
+                    <span class="text-gray-500">Số lượng: </span><span>{{ campaign?.detail_count }}</span>
+                    &nbsp;&nbsp;-&nbsp;&nbsp;
+                    <span class="text-gray-500">Phụ trách: </span><span>{{ campaign?.assigned?.fullname }}</span>
                 </div>
             </div>
         </div>
@@ -58,22 +65,23 @@
                 <thead class="border-b">
                     <tr>
                         <th class="p-3 text-left w-12" width="5%">
-                            <input type="checkbox" class="w-4 h-4 rounded">
+                            <input type="checkbox" class="w-4 h-4 rounded" :checked="isAllSelected" @change="toggleAll">
                         </th>
                         <th class="p-3 text-sm text-center font-medium" width="5%">#</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Họ tên</th>
                         <th class="p-3 text-sm text-left font-medium" width="15%">Email</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Số điện thoại</th>
                         <th class="p-3 text-sm text-left font-medium" width="25%">Doanh nghiệp</th>
-                        <th class="p-3 text-sm text-left font-medium" width="15%">Tình trạng</th>
-                        <th class="p-3 text-sm text-left font-medium" width="15%">Đánh giá</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Tiến độ</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Tình trạng</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Đánh giá</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(customer, index) in customers" :key="index" class="border-b hover:bg-gray-100 transition-all">
 
                         <td class="p-3">
-                            <input type="checkbox" class="w-4 h-4 rounded">
+                            <input type="checkbox" class="w-4 h-4 rounded" :checked="isChecked(customer?.customer)" @change="toggleItem(customer?.customer)">
                         </td>
 
                         <td class="p-3">
@@ -85,7 +93,7 @@
                                     </button>
                                     <!-- Menu -->
                                     <ul class="dropdown-menu hidden absolute mt-2 w-40 bg-white border rounded shadow-md py-1 z-50">
-                                        <li class="px-4 py-2 text-red-500 hover:bg-red-500/10 cursor-pointer text-sm" @click="deleteItem(customer?.customer?.id)"><i class="ti ti-trash"></i>&nbsp;&nbsp;Xóa</li>
+                                        <li class="px-4 py-2 text-red-500 hover:bg-red-500/10 cursor-pointer text-sm" @click="deleteCustomer(customer?.customer?.id)"><i class="ti ti-trash"></i>&nbsp;&nbsp;Xóa</li>
                                     </ul>
                                 </div>
                             </div>
@@ -108,8 +116,14 @@
                         </td>
 
                         <td class="p-3">
-                            <span class="text-white text-xs px-2 py-1 text-xs font-medium inline-flex items-center rounded-md border" :class="customer?.progress?.color">
+                            <span v-if="customer?.progress_id > 0" :class="customer?.progress?.color" class="text-xs px-2 py-1 font-medium inline-flex items-center rounded-md border" >
                                 {{ customer?.progress?.name }}
+                            </span>
+                        </td>
+
+                        <td class="p-3">
+                            <span v-if="customer?.status_id > 0" :class="customer?.status?.color" class="text-xs px-2 py-1 font-medium inline-flex items-center rounded-md border" >
+                                {{ customer?.status?.name }}
                             </span>
                         </td>
 
@@ -125,8 +139,9 @@
             </table>
         </div>
 
-        <Offcanvas :open="open" @close="open = false">
-            <CampaignCustomer :customer="selectedCustomer" :progress="progress" @saved="handleSaved" @close="closeCanvas" :campaign-id="id" />
+        <Offcanvas :open="openCanvas" @close="openCanvas = false" :width="'w-[800px]'">
+            <CampaignCustomer v-if="canvasType === 'customer'" :customer="selectedCustomer" :progress="progress" :campaign-id="id" @saved="handleSaved" @close="closeCanvas" />
+            <CampaignReport v-else-if="canvasType === 'report'" :campaign-id="id"/>
         </Offcanvas>
 
     </div>
@@ -147,9 +162,19 @@
     const keyword = ref('')
 	const { id } = route.params
 
-    const open = ref(false)
+    const openCanvas = ref(false)
+    const canvasType = ref<'customer' | 'report' | null>(null)
+
     const selectedCustomer = ref('');
     const progress = ref([])
+
+    const {
+        selected: checkbox,
+        toggleItem,
+        toggleAll,
+        isAllSelected,
+        isChecked
+    } = useCheckboxTable(customers)
 
     onMounted(() => {
     	view();
@@ -179,7 +204,7 @@
         view()
     }
     
-    async function deleteItem(id) {
+    async function deleteCampaign() {
 
         Swal.fire({
             title: "Xóa dữ liệu",
@@ -216,6 +241,43 @@
         });
     }
 
+    async function deleteCustomer(customer_id) {
+        Swal.fire({
+            title: "Xóa dữ liệu",
+            text: "Bạn chắc chắn muốn xóa dữ liệu này",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Đóng"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const res = await useNuxtApp().$apiFetch(`campaign/deleteCustomer`, {
+                    method: 'POST',
+                    body: {
+                        campaign_id: id,
+                        ids: [customer_id]
+                    }
+                })
+
+                if (res.status) {
+                    notify.success({
+                        title: 'Thông báo',
+                        description: res.message
+                    })
+
+                    view()
+                } else {
+                    notify.error({
+                        title: 'Thông báo',
+                        description: res.message
+                    })
+                }
+            }
+        });
+    }
+
     const openCustomer = async(customer_id) => {
 
         const res = await useNuxtApp().$apiFetch(`campaign/customer`, {
@@ -229,7 +291,8 @@
         if (res.status) {
             selectedCustomer.value = res.data.customer
             progress.value = res.data.progress
-            open.value = true
+            canvasType.value = 'customer'
+            openCanvas.value = true
         } else {
             notify.error({
                 title: 'Thông báo',
@@ -238,12 +301,17 @@
         }
     }
 
+    const openReport = () => {
+        canvasType.value = 'report'
+        openCanvas.value = true
+    }
+
     const handleSaved = () => {
-        open.value = false
+        openCanvas.value = false
         view()
     }
 
     const closeCanvas = () => {
-        open.value = false
+        openCanvas.value = false
     }
 </script>

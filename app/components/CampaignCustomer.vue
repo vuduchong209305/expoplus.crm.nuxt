@@ -17,13 +17,13 @@
         </div>
         <!-- STATUS -->
         <div>
-            <label class="text-sm text-gray-700 mb-1 block">Trạng thái</label>
-            <select v-model="form.status" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500">
-                <option value="new">Mới</option>
-                <option value="contacted">Đã liên hệ</option>
-                <option value="interested">Quan tâm</option>
-                <option value="converted">Đã chuyển đổi</option>
-                <option value="lost">Không quan tâm</option>
+            <label class="text-sm font-semibold text-gray-700 mb-1 block">Trạng thái</label>
+            <select v-model="form.status_id" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500">
+            	<option value="">Lựa chọn</option>
+                <option value="1">Có quan tâm</option>
+                <option value="2">Đang cân nhắc</option>
+                <option value="3">Không quan tâm</option>
+                
             </select>
         </div>
         <!-- PROGRESS -->
@@ -75,14 +75,14 @@
 		</div>
         <!-- RATING -->
         <div>
-            <label class="text-sm text-gray-700 mb-2 block">Đánh giá</label>
+            <label class="text-sm font-semibold text-gray-700 mb-2 block">Đánh giá</label>
             <div class="flex items-center gap-1">
                 <span v-for="i in 5" :key="i" @click="form.rating = i" class="cursor-pointer text-3xl transition" :class="i <= form.rating ? 'text-yellow-400' : 'text-gray-300'"> ★ </span>
             </div>
         </div>
         <!-- NOTE -->
         <div>
-            <label class="text-sm text-gray-700 mb-1 block">Ghi chú</label>
+            <label class="text-sm font-semibold text-gray-700 mb-1 block">Ghi chú</label>
             <textarea v-model="form.note" rows="4" placeholder="Nhập ghi chú..." class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500 resize-none"></textarea>
         </div>
         <!-- ACTION -->
@@ -107,7 +107,7 @@
 	    fullname: '',
 	    email: '',
 	    company: '',
-	    status: 'new',
+	    status_id: '',
 	    rating: 0,
 	    note: '',
 	    progress_id: props.customer?.progress_id || null
@@ -128,7 +128,7 @@
 	        	campaign_id: props.campaignId,
 	            customer_id: form.id,
 	            progress_id: form.progress_id,
-	            status: form.status,
+	            status_id: form.status_id,
 	            rating: form.rating,
 	            note: form.note
 	        }
@@ -136,6 +136,11 @@
 
 	    if (res.status) {
 	        emit('saved')
+
+	        notify.success({
+                title: 'Thông báo',
+                description: res.message
+            })
 	    }
 	}
 

@@ -41,7 +41,7 @@
 				        
 				        <hr class="my-5">
 
-				        <div class="max-h-[400px] overflow-y-auto space-y-2">
+				        <div class="max-h-[700px] overflow-y-auto space-y-2">
 				            <div v-for="item in availableCustomers" :key="item.id" class="flex items-center justify-between px-3 py-2 border border-indigo-200 rounded cursor-pointer hover:bg-indigo-50">
 				            	<div class="flex items-center justify-between">
 				            		<img :src="viewImage(item.avatar)" class="w-10 h-10 rounded-full" :alt="item.fullname">
@@ -68,7 +68,7 @@
 				    <div class="border rounded-lg p-4">
 				        <h5 class="font-semibold mb-3">Đã chọn ({{ selected.length }})</h5>
 				        <div v-if="selected.length === 0" class="text-sm text-gray-400"> Chưa có khách hàng nào </div>
-				        <div class="max-h-[400px] overflow-y-auto space-y-2">
+				        <div class="max-h-[700px] overflow-y-auto space-y-2">
 				            <div v-for="item in selected" :key="item.id" class="flex items-center justify-between px-3 py-2 border rounded bg-indigo-50">
 				                <div class="flex items-center justify-between">
 				            		<img :src="viewImage(item.avatar)" class="w-10 h-10 rounded-full" :alt="item.fullname">
