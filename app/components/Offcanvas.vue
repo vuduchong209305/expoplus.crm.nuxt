@@ -6,13 +6,10 @@
         </transition>
         <!-- Panel -->
         <transition name="slide">
-            <div v-if="open" :class="[
-          'fixed top-0 right-0 h-full bg-white shadow-xl z-50 flex flex-col',
-          width
-        ]">
+            <div v-if="open" :class="['fixed top-0 right-0 h-full bg-white shadow-xl z-50 flex flex-col', width]">
                 <!-- Header -->
                 <div class="flex items-center justify-between p-4 border-b">
-                    <h3 class="font-semibold"></h3>
+                    <h3 class="font-semibold text-lg">{{ title }}</h3>
                     <button @click="emit('close')">
                         <i class="ti ti-x"></i>
                     </button>
@@ -32,6 +29,10 @@
         width: {
             type: String,
             default: 'w-[400px]'
+        },
+        title: {
+            type: String,
+            default: ''
         }
     })
 

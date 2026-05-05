@@ -1,12 +1,5 @@
 <template>
     <div class="space-y-6">
-
-        <!-- HEADER -->
-        <div>
-            <h2 class="text-lg font-semibold">Báo cáo chiến dịch</h2>
-            <p class="text-sm text-gray-500">Phân tích hiệu quả & tiến độ</p>
-        </div>
-
         <!-- KPI -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="p-4 bg-white border rounded-lg">

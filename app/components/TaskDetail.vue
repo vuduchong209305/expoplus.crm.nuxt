@@ -2,7 +2,7 @@
     <form @submit.prevent="submit" class="space-y-6">
         <!-- TITLE -->
         <div>
-            <input v-model="form.title" type="text" placeholder="Tên tác vụ..." class="w-full text-lg font-semibold outline-none border-b border-transparent focus:border-indigo-500 pb-1" />
+            <input v-model="form.title" type="text" placeholder="Tên tác vụ..." class="w-full text-lg font-semibold border-b border-gray-300 focus:border-indigo-500 focus:outline-none pb-2" />
         </div>
         <!-- META -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -94,7 +94,7 @@
 	    </form>
 	</div>
 
-	<Offcanvas :open="open" @close="open = false">
+	<Offcanvas :open="open" @close="open = false" :title="`Chi tiết công việc`">
         <TaskDetail :task="selectedTask" :users="users" @deleted="handleDeleted" @saved="handleSaved" @close="closeCanvas"/>
     </Offcanvas>
 </template>

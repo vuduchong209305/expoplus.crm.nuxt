@@ -86,6 +86,7 @@
 
                         <td class="p-3">
                             <div class="flex items-center justify-center gap-2">
+                                <button type="button" class="px-1 rounded-full border border-gray-200 text-gray-700 hover:bg-indigo-500 hover:text-white transition-all focus:bg-indigo-500 focus:text-white" @click="selectedCustomer = customer?.customer; openCustomer(customer?.customer?.id)" href="javascript:;"><i class="ti ti-edit text-sm"></i></button>
                                 <div class="dropdown relative">
                                     <!-- Trigger -->
                                     <button class="dropdown-btn px-1 border rounded-full bg-white text-gray-700 border-gray-200">
@@ -100,7 +101,7 @@
                         </td>
 
                         <td class="p-3">
-                            <a @click="selectedCustomer = customer?.customer; openCustomer(customer?.customer?.id)" href="javascript:;" class="text-indigo-600 text-sm hover:font-medium">{{ customer?.customer?.fullname }}</a>
+                            <NuxtLink :to="`/customer/view/${customer?.customer?.id}`" target="_blank" class="text-indigo-600 text-sm hover:font-medium">{{ customer?.customer?.fullname }}</NuxtLink>
                         </td>
 
                         <td class="p-3">
@@ -139,7 +140,7 @@
             </table>
         </div>
 
-        <Offcanvas :open="openCanvas" @close="openCanvas = false" :width="'w-[800px]'">
+        <Offcanvas :open="openCanvas" @close="openCanvas = false" :width="'w-[800px]'" :title="canvasTitle">
             <CampaignCustomer v-if="canvasType === 'customer'" :customer="selectedCustomer" :progress="progress" :campaign-id="id" @saved="handleSaved" @close="closeCanvas" />
             <CampaignReport v-else-if="canvasType === 'report'" :campaign-id="id"/>
         </Offcanvas>
@@ -314,4 +315,15 @@
     const closeCanvas = () => {
         openCanvas.value = false
     }
+
+    const canvasTitle = computed(() => {
+        switch (canvasType.value) {
+            case 'customer':
+                return `Chi tiết khách hàng: ${selectedCustomer.value?.fullname || ''}`
+            case 'report':
+                return 'Báo cáo chiến dịch'
+            default:
+                return 'Chi tiết'
+        }
+    })
 </script>
