@@ -19,21 +19,55 @@
             <h1 class="text-2xl font-bold uppercase">PHIẾU BÁO GIÁ</h1>
             <p class="text-sm text-gray-500">Mã: {{ quotation?.code }}</p>
         </div>
+
         <!-- CUSTOMER -->
-        <div class="mb-4">
-        	<p class="text-sm">
-                <strong>Doanh nghiệp:</strong> {{ customer?.company }}
-            </p>
-            <p class="text-sm">
-                <strong>Họ tên:</strong> {{ customer?.fullname }}
-            </p>
-            <p class="text-sm">
-                <strong>Email:</strong> {{ customer?.email }}
-            </p>
-            <p class="text-sm">
-                <strong>SĐT:</strong> {{ customer?.phone }}
-            </p>
+        <div class="mb-5 text-[13px] text-gray-700 leading-6">
+
+            <div class="flex flex-wrap gap-x-8 gap-y-1">
+
+                <div>
+                    <span class="text-gray-400">Triển lãm: </span>
+                    <span class="font-medium">{{ exhibition?.title }}</span>
+                </div>
+
+                <div>
+                    <span class="text-gray-400">Thời gian: </span>
+                    {{ exhibition?.start_date }} <i class="ti ti-arrow-right"></i> {{ exhibition?.end_date }}
+                </div>
+
+                <div>
+                    <span class="text-gray-400">Địa điểm:</span>
+                    {{ exhibition?.location }}
+                </div>
+
+            </div>
+
+            <div class="border-t my-3"></div>
+
+            <div>
+                <span class="text-gray-400">Khách hàng: </span>
+                <span class="font-medium">{{ customer?.company || '-' }}</span>
+            </div>
+
+            <div class="flex flex-wrap justify-between gap-x-8 gap-y-1">
+                <div>
+                    <span class="text-gray-400">Họ tên: </span>
+                    {{ customer?.fullname }}
+                </div>
+
+                <div>
+                    <span class="text-gray-400">SĐT: </span>
+                    {{ customer?.phone }}
+                </div>
+
+                <div>
+                    <span class="text-gray-400">Email: </span>
+                    {{ customer?.email }}
+                </div>
+            </div>
+
         </div>
+
         <!-- TABLE -->
         <table class="w-full border border-gray-300 text-sm">
             <thead class="bg-gray-100">
@@ -101,7 +135,8 @@
     const props = defineProps({
         quotation: Object,
         items: Array,
-        customer: Object
+        customer: Object,
+        exhibition: Object
     })
 
     const { user } = useAuth()

@@ -32,6 +32,13 @@
                 </div>
 
                 <div>
+                	<select v-model="selectedExhibition" class="text-sm border px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500">
+                		<option value="">-- Chọn sự kiện --</option>
+				        <option v-for="e in exhibitions" :key="e.id" :value="e.id">
+				            {{ e.title }}
+				        </option>
+                	</select>
+                	&nbsp;
                 	<select v-model="selectedCustomer" class="text-sm border px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500">
                 		<option value="">-- Chọn khách hàng --</option>
 				        <option v-for="c in customers" :key="c.id" :value="c.id">
@@ -164,6 +171,7 @@
 		    :quotation="quotation"
 		    :items="items"
 		    :customer="customer"
+		    :exhibition="exhibition"
 		/>
     </div>
 </template>
@@ -189,6 +197,10 @@
 	const discount = ref(0)
 	const isVat = ref(true)
 
+	const exhibition = ref([])
+	const exhibitions = ref([])
+	const selectedExhibition = ref('')
+
 	const customers = ref([])
 	const customer = ref([])
 	const selectedCustomer = ref('')
@@ -208,11 +220,19 @@
 
             if (res.status) {
 
-            	quotation.value = res.data
-            	discount.value = res.data.discount
-            	note.value = res.data.note
+            	const data = res.data
 
-                items.value = res.data.details.map(i => ({
+            	quotation.value = data
+
+            	discount.value = data.discount
+            	note.value = data.note
+            	customer.value = data.customer
+            	exhibition.value = data.exhibition
+
+                selectedCustomer.value = data.customer_id
+                selectedExhibition.value = data.exhibition_id
+
+                items.value = data.details.map(i => ({
 			        id: i.product_id,
 			        title: i.product?.title,
 			        avatar: i.product?.avatar || '',
@@ -221,15 +241,14 @@
 			        qty: i.qty
 			    }))
 
-                customer.value = res.data.customer
-                selectedCustomer.value = res.data.customer_id
+
             }
         }
     }
 
 	/* ================= FETCH PRODUCT ================= */
 	const fetchProducts = async () => {
-	    const res = await useNuxtApp().$apiFetch('/product',)
+	    const res = await useNuxtApp().$apiFetch('product')
 	    if (res.status) {
 	        products.value = res.data.data
 	    }
@@ -237,12 +256,21 @@
 
 	/* ================= FETCH CUSTOMER ================= */
 	const fetchCustomers = async () => {
-	    const res = await useNuxtApp().$apiFetch('/customer', {
+	    const res = await useNuxtApp().$apiFetch('customer', {
 	    	method: "POST"
 	    })
 
 	    if (res.status) {
 	        customers.value = res.data.data
+	    }
+	}
+
+	/* ================= FETCH EXHIBITION ================= */
+	const fetchExhibitions = async () => {
+	    const res = await useNuxtApp().$apiFetch('exhibition')
+
+	    if (res.status) {
+	        exhibitions.value = res.data
 	    }
 	}
 
@@ -302,6 +330,14 @@
             return
 		}
 
+		if(!selectedExhibition.value) {
+			notify.error({
+                title: 'Bắt buộc chọn',
+                description: 'Vui lòng chọn sự kiện'
+            })
+            return
+		}
+
 		if(items.value.length == 0) {
 			notify.error({
                 title: 'Bắt buộc chọn',
@@ -315,6 +351,7 @@
 	        body: {
 	        	id: isEdit.value ? id : null,
 	        	customer_id: selectedCustomer.value,
+	        	exhibition_id: selectedExhibition.value,
 	            items: items.value,
 	            discount: discount.value,
 	            is_vat: isVat.value,
@@ -441,5 +478,6 @@
 	onMounted(() => {
         fetchProducts()
         fetchCustomers()
+        fetchExhibitions()
     })
 </script>
