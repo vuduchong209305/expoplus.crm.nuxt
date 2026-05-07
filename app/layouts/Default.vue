@@ -170,6 +170,34 @@
                 }
             ]
         },
+        {
+            name: 'Hợp đồng',
+            icon: 'ti ti-contract',
+            children: [
+                {
+                    name: 'Báo giá',
+                    to: '/contract/quotation'
+                },
+                {
+                    name: 'Hóa đơn',
+                    to: '/contract/invoice'
+                }
+            ]
+        },
+        {
+            name: 'Hệ thống',
+            icon: 'ti ti-settings',
+            children: [
+                {
+                    name: 'Sản phẩm',
+                    to: '/system/product'
+                },
+                {
+                    name: 'Nhân viên',
+                    to: '/system/user'
+                }
+            ]
+        }
     ]
 
     onMounted(() => {

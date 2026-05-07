@@ -1,11 +1,11 @@
 <template>
-    <div class="bg-white border-b px-4 sm:px-6 py-4 sm:py-3">
+	<div class="bg-white border-b px-4 sm:px-6 py-4 sm:py-3">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-                <h1 class="text-lg sm:text-xl font-semibold">Chiến dịch</h1>
-                <p class="text-sm text-gray-500 mt-0.5">Các chiến dịch marketing</p>
+                <h1 class="text-lg sm:text-xl font-semibold">Sản phẩm</h1>
+                <p class="text-sm text-gray-500 mt-0.5">Các sản phẩm bán cho khách hàng</p>
             </div>
-            <NuxtLink to="/marketing/campaign/create" class="px-4 py-2 text-sm font-medium bg-white text-black border border-gray-500 rounded-lg hover:bg-black hover:text-white hover:border-white active:scale-95 transition-all"><i class="ti ti-plus me-2"></i>Thêm chiến dịch </NuxtLink>
+            <NuxtLink to="/system/product/create" class="px-4 py-2 text-sm font-medium bg-white text-black border border-gray-500 rounded-lg hover:bg-black hover:text-white hover:border-white active:scale-95 transition-all"><i class="ti ti-plus me-2"></i>Thêm sản phẩm </NuxtLink>
         </div>
     </div>
 
@@ -15,7 +15,7 @@
         	<div class="flex flex-wrap items-center gap-2">
                 
                 <form @submit.prevent="submitSearch" class="relative w-80">
-                    <input v-model="search" placeholder="Tìm tên, email, số điện thoại..." class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
+                    <input v-model="search" placeholder="Tìm tên sản phẩm..." class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
                     <!-- BUTTON INSIDE -->
                     <button type="submit" class="absolute right-1 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-indigo-600">
                         <i class="ti ti-search text-lg"></i>
@@ -34,16 +34,14 @@
                             <input type="checkbox" class="w-4 h-4 rounded">
                         </th>
                         <th class="p-3 text-sm text-center font-medium" width="5%">#</th>
-                        <th class="p-3 text-sm text-left font-medium" width="30%">Tên chiến dịch</th>
-                        <th class="p-3 text-sm text-left font-medium" width="15%">Số lượng KH</th>
-                        <th class="p-3 text-sm text-left font-medium" width="15%">Phụ trách</th>
-                        <th class="p-3 text-sm text-left font-medium" width="10%">Ngày bắt đầu</th>
-                        <th class="p-3 text-sm text-left font-medium" width="10%">Ngày kết thúc</th>
-                        <th class="p-3 text-sm text-left font-medium" width="10%">Ngày tạo</th>
+                        <th class="p-3 text-sm text-left font-medium" width="5%">Ảnh</th>
+                        <th class="p-3 text-sm text-left font-medium" width="65%">Tên sản phẩm</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Giá</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Đơn vị tính</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(item, index) in campaigns" :key="index" class="border-b hover:bg-gray-100 transition-all">
+                    <tr v-for="(item, index) in products" :key="index" class="border-b hover:bg-gray-100 transition-all">
 
                         <td class="p-3">
                             <input type="checkbox" class="w-4 h-4 rounded">
@@ -59,7 +57,7 @@
                                     <!-- Menu -->
                                     <ul class="dropdown-menu hidden absolute mt-2 w-40 bg-white border rounded shadow-md py-1 z-50">
                                         <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm">
-                                            <NuxtLink :to="`/marketing/campaign/${item.id}`" class="block w-full">
+                                            <NuxtLink :to="`/system/product/${item.id}`" class="block w-full">
                                                 <i class="ti ti-edit"></i>&nbsp;&nbsp;Sửa
                                             </NuxtLink>
                                         </li>
@@ -70,28 +68,21 @@
                         </td>
 
                         <td class="p-3">
-                            <NuxtLink :to="`/marketing/campaign/view/${item.id}`" class="text-indigo-600 text-sm hover:font-medium">{{ item?.title }}</NuxtLink>
+                            <img :src="viewImage(item?.avatar)" :alt="item?.title" width="100%" class="rounded-lg">
                         </td>
 
                         <td class="p-3">
-                            <span class="text-gray-500 text-sm">{{ item?.detail_count ?? 0 }}</span>
+                            <span class="text-gray-500">{{ item?.title }}</span>
                         </td>
 
                         <td class="p-3">
-                            <span class="text-gray-500 text-sm">{{ item?.assigned?.fullname }}</span>
+                            <span class="text-gray-500">{{ formatMoney(item?.price) }}</span>
                         </td>
 
                         <td class="p-3">
-                            <span class="text-gray-500 text-xs">{{ item?.start_date }}</span>
+                            <span class="text-gray-500">{{ item?.unit }}</span>
                         </td>
 
-                        <td class="p-3">
-                            <span class="text-gray-500 text-xs">{{ item?.end_date }}</span>
-                        </td>
-
-                        <td class="p-3">
-                            <span class="text-gray-500 text-xs">{{ item?.created_at }}</span>
-                        </td>
 
                     </tr>
                     
@@ -109,7 +100,6 @@
         />
 
     </div>
-
 </template>
 
 <script setup lang="ts">
@@ -128,7 +118,7 @@
     })
 
     const route = useRoute()
-    const campaigns = ref([])
+    const products = ref([])
     const search = ref('')
 
     watch(() => route.query.page, (page) => {
@@ -137,7 +127,7 @@
 
     async function fetch(page = 1) {
 
-        const res = await useNuxtApp().$apiFetch(`campaign`, {
+        const res = await useNuxtApp().$apiFetch(`product`, {
             params: {
                 page: page,
                 search: search.value,
@@ -145,7 +135,7 @@
         });
 
         if (res.status) {
-            campaigns.value = res.data.data
+            products.value = res.data.data
             pagination.value = {
                 current_page: res.data.current_page,
                 last_page: res.data.last_page,
@@ -177,7 +167,7 @@
             cancelButtonText: "Đóng"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const res = await useNuxtApp().$apiFetch(`campaign/delete`, {
+                const res = await useNuxtApp().$apiFetch(`product/delete`, {
                     method: 'POST',
                     body: {
                         id
@@ -201,7 +191,4 @@
         });
     }
 
-    useHead(() => ({
-        title: 'Nhóm khách hàng'
-    }))
 </script>
