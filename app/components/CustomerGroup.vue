@@ -1,14 +1,8 @@
 <template>
     <div class="flex flex-col h-full">
-        <!-- HEADER -->
-        <div class="flex items-center justify-between mb-2">
-            <div>
-                <h3 class="font-semibold text-lg">Chọn nhóm khách hàng</h3>
-                <p class="text-xs text-gray-500">Tìm và thêm nhóm khách hàng vào chiến dịch</p>
-            </div>
-        </div>
+
         <!-- SEARCH -->
-        <div class="py-3">
+        <div class="pb-3">
             <input v-model="search" type="text" placeholder="Tìm tên nhóm..." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
         </div>
         <!-- LIST -->
@@ -49,19 +43,14 @@
         <!-- FOOTER -->
         <div class="px-4 py-3 border-t flex justify-end gap-2">
             <button @click="$emit('close')" class="px-4 py-2 text-sm border rounded-lg hover:bg-gray-100"> Hủy </button>
-            <button @click="handleSave" class="px-5 py-2 text-sm bg-indigo-500 text-white rounded-lg hover:bg-indigo-600"> Thêm ({{ newSelected.length }}) </button>
+            <button @click="handleSave" class="px-5 py-2 text-sm bg-indigo-500 text-white rounded-lg hover:bg-indigo-600"> Thêm ({{ selectedGroups.length }}) </button>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-
 	const props = defineProps({
-		campaignId: {
-	        type: [Number, String],
-	        default: null
-	    },
-	    selected: {
+	    selectedCustomers: {
 	        type: Array,
 	        default: () => []
 	    }
@@ -71,7 +60,8 @@
 
 	const customers_group = ref([])
 	const loading = ref(false)
-	const selected = ref([])
+	const selectedGroups = ref([])
+	const selectedCustomers = ref([])
 
 	const search = ref('')
 	const page = ref(1)
@@ -83,8 +73,8 @@
 	    total: 0
 	})
 
-	watch(() => props.selected, (val) => {
-	    selected.value = [...val] // clone để tránh mutate props
+	watch(() => props.selectedCustomers, (val) => {
+	    selectedCustomers.value = [...val] // clone để tránh mutate props
 	}, {
 	    immediate: true
 	})
@@ -100,8 +90,7 @@
 	    const res = await useNuxtApp().$apiFetch('customer-group', {
 	        params: {
 	            page: page.value,
-	            search: search.value,
-	            campaign_id: props.campaignId
+	            search: search.value
 	        }
 	    })
 
@@ -147,27 +136,39 @@
 	}
 
 	/* ================= ACTION ================= */
-	const handleSave = () => {
-	    emit('saved', newSelected.value.map(i => i.id))
+	const handleSave = async() => {
+
+		const res = await useNuxtApp().$apiFetch('campaign/customer-group', {
+            params: {
+                group_ids: selectedGroups.value.map(i => i.id)
+            }
+        })
+
+        if(res.status) {
+        	const customers = res.data.map(i => i.customer)
+        	
+        	const merged = Array.from(
+			    new Map(
+			        [...selectedCustomers.value, ...customers]
+			        .map(item => [item.id, item])
+			    ).values()
+			)
+
+	        emit('saved', merged)
+        }   
 	}
 
 	const toggleSelect = (item) => {
-	    const index = selected.value.findIndex(i => i.id === item.id)
+	    const index = selectedGroups.value.findIndex(i => i.id === item.id)
 
 	    if (index > -1) {
-	        selected.value.splice(index, 1)
+	        selectedGroups.value.splice(index, 1)
 	    } else {
-	        selected.value.push(item)
+	        selectedGroups.value.push(item)
 	    }
 	}
 
 	const isSelected = (id) => {
-	    return selected.value.some(i => i.id === id)
+	    return selectedGroups.value.some(i => i.id === id)
 	}
-
-	const newSelected = computed(() => {
-	    const existingIds = props.selected.map(i => i.id)
-
-	    return selected.value.filter(i => !existingIds.includes(i.id))
-	})
 </script>

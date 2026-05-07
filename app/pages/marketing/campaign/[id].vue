@@ -102,10 +102,10 @@
 
         </form>
 
-        <Offcanvas :open="open" @close="open = false">
-            <CustomerList v-if="sourceType == 'list'" :selected="selectedCustomers" @saved="handleSaved" @close="closeCanvas" :campaignId="campaignId"/>
+        <Offcanvas :open="open" @close="open = false" :title="canvasTitle">
+            <CustomerList v-if="sourceType == 'list'" :selected="selectedCustomers" @saved="handleSelectCustomer" @close="closeCanvas" :campaignId="campaignId"/>
 
-            <CustomerGroup v-else-if="sourceType == 'group'" :selected="selectedCustomers" @saved="handleSavedGroup" @close="closeCanvas" :campaignId="campaignId"/>
+            <CustomerGroup v-else-if="sourceType == 'group'" :selectedCustomers="selectedCustomers" @saved="handleSelectGroup" @close="closeCanvas"/>
         </Offcanvas>
 
     </div>
@@ -159,25 +159,14 @@
         open.value = true
     }
 
-    const handleSaved = (data) => {
+    const handleSelectCustomer = (data) => {
         selectedCustomers.value = data
         open.value = false
     }
 
-    const handleSavedGroup = async (groupIds) => {
-
-        const res = await useNuxtApp().$apiFetch('campaign/add-group', {
-            method: 'POST',
-            body: {
-                id: campaignId.value,
-                group_ids: groupIds
-            }
-        })
-
-        if(res.status) {
-            await fetch() // reload lại
-            open.value = false
-        }        
+    const handleSelectGroup = async (data) => {
+        selectedCustomers.value = data
+        open.value = false
     }
 
     const closeCanvas = () => {
@@ -324,4 +313,15 @@
         const pad = (n: number) => n.toString().padStart(2, '0');
         return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
     }
+
+    const canvasTitle = computed(() => {
+        switch (sourceType.value) {
+            case 'list':
+                return `Chọn khách hàng`
+            case 'group':
+                return 'Chọn nhóm khách hàng'
+            default:
+                return '#'
+        }
+    })
 </script>

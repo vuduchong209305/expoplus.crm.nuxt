@@ -1,14 +1,8 @@
 <template>
     <div class="flex flex-col h-full">
-        <!-- HEADER -->
-        <div class="flex items-center justify-between mb-2">
-            <div>
-                <h3 class="font-semibold text-lg">Chọn khách hàng</h3>
-                <p class="text-xs text-gray-500">Tìm và thêm khách hàng vào chiến dịch</p>
-            </div>
-        </div>
+
         <!-- SEARCH -->
-        <div class="py-3">
+        <div class="pb-3">
             <input v-model="search" type="text" placeholder="Tìm tên, email, số điện thoại..." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
         </div>
         <!-- LIST -->
