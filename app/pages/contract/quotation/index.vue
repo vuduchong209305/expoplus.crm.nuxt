@@ -194,6 +194,10 @@
         });
     }
 
+    async function submitSearch() {
+        await fetch()
+    }
+
     useHead(() => ({
         title: 'Nhóm khách hàng'
     }))
