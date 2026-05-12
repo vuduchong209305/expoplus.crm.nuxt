@@ -11,7 +11,7 @@
             </div>
             <!-- RIGHT: LOGO -->
             <div>
-                <img src="/logo.png" class="w-48 object-contain" />
+                <img :src="quotation?.exhibition?.logo ? viewImage(quotation?.exhibition?.logo) : '/logo.png'" class="w-48 object-contain" />
             </div>
         </div>
         <!-- TITLE -->

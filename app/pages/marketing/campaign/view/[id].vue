@@ -6,8 +6,12 @@
                     <img class="h-20 w-20 rounded-full border border-gray-200 bg-gray-100 p-4 object-cover" src="/megaphone.png" />
                 </div>
                 <div>
-                    <h1 class="text-lg sm:text-xl font-semibold">Chiến dịch: {{ campaign?.title }}</h1>
-                    <p class="text-sm text-gray-500 mt-0.5">Bắt đầu: <span class="text-green-600">{{ campaign?.start_date }}</span> <i class="ti ti-arrow-right"></i> Kết thúc: <span class="text-red-600">{{ campaign?.end_date }}</span></p>
+                    <h1 class="text-lg sm:text-xl font-semibold">
+                        Chiến dịch: {{ campaign?.title }}
+                    </h1>
+                    <p class="text-sm text-gray-500 my-1">Bắt đầu: <span class="text-green-600">{{ campaign?.start_date }}</span> <i class="ti ti-arrow-right"></i> Kết thúc: <span class="text-red-600">{{ campaign?.end_date }}</span></p>
+
+                    <span :class="['text-xs py-0 px-2 rounded-full border', campaign?.is_complete == 1 ? 'border-green-300 text-green-500 bg-green-100' : 'border-red-300 text-red-500 bg-red-100']">{{ campaign?.is_complete == 1 ? 'Hoàn thành' : 'Chưa hoàn thành' }}</span>
                 </div>
             </div>
 

@@ -35,8 +35,9 @@
                         </th>
                         <th class="p-3 text-sm text-center font-medium" width="5%">#</th>
                         <th class="p-3 text-sm text-left font-medium" width="30%">Tên chiến dịch</th>
-                        <th class="p-3 text-sm text-left font-medium" width="15%">Số lượng KH</th>
-                        <th class="p-3 text-sm text-left font-medium" width="15%">Phụ trách</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Trạng thái</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Số lượng KH</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Phụ trách</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Ngày bắt đầu</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Ngày kết thúc</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Ngày tạo</th>
@@ -57,7 +58,7 @@
                                         <i class="ti ti-dots-vertical text-gray-400"></i>
                                     </button>
                                     <!-- Menu -->
-                                    <ul class="dropdown-menu hidden absolute mt-2 w-40 bg-white border rounded shadow-md py-1 z-50">
+                                    <ul class="dropdown-menu hidden absolute mt-2 w-52 bg-white border rounded shadow-md py-1 z-50">
                                         <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm">
                                             <NuxtLink :to="`/marketing/campaign/${item.id}`" class="block w-full">
                                                 <i class="ti ti-edit"></i>&nbsp;&nbsp;Sửa
@@ -70,7 +71,11 @@
                         </td>
 
                         <td class="p-3">
-                            <NuxtLink :to="`/marketing/campaign/view/${item.id}`" class="text-indigo-600 text-sm hover:font-medium">{{ item?.title }}</NuxtLink>
+                            <NuxtLink :to="`/marketing/campaign/view/${item.id}`" class="text-blue-500 text-sm hover:font-medium">{{ item?.title }}</NuxtLink>
+                        </td>
+
+                        <td class="p-3">
+                            <span :class="['text-xs py-1 px-2 rounded-full border', item?.is_complete == 1 ? 'border-green-300 text-green-500 bg-green-100' : 'border-red-300 text-red-500 bg-red-100']">{{ item?.is_complete == 1 ? 'Hoàn thành' : 'Chưa hoàn thành' }}</span>
                         </td>
 
                         <td class="p-3">
@@ -131,8 +136,8 @@
     const campaigns = ref([])
     const search = ref('')
 
-    watch(() => route.query.page, (page) => {
-        fetch(Number(page) || 1)
+    watch(() => route.query.page, async (page) => {
+        await fetch(Number(page) || 1)
     }, { immediate: true })
 
     async function fetch(page = 1) {
@@ -202,6 +207,6 @@
     }
 
     useHead(() => ({
-        title: 'Nhóm khách hàng'
+        title: 'Chiến dịch'
     }))
 </script>

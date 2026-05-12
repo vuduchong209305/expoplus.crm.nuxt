@@ -15,7 +15,7 @@
         	<div class="flex flex-wrap items-center gap-2">
                 
                 <form @submit.prevent="submitSearch" class="relative w-80">
-                    <input v-model="search" placeholder="Tìm mã báo giá, khách hàng..." class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
+                    <input v-model="search" placeholder="Tìm mã báo giá, khách hàng, triển lãm..." class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
                     <!-- BUTTON INSIDE -->
                     <button type="submit" class="absolute right-1 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-indigo-600">
                         <i class="ti ti-search text-lg"></i>
@@ -35,11 +35,11 @@
                         </th>
                         <th class="p-3 text-sm text-center font-medium" width="5%">#</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Mã báo giá</th>
-                        <th class="p-3 text-sm text-left font-medium" width="40%">Khách hàng</th>
-                        <th class="p-3 text-sm text-left font-medium" width="10%">Số lượng SP</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Họ tên</th>
+                        <th class="p-3 text-sm text-left font-medium" width="40%">Doanh nghiệp</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Thành tiền</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Ngày tạo</th>
-                        <th class="p-3 text-sm text-left font-medium" width="10%">Ngày cập nhật</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Triển lãm</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,11 +74,11 @@
                         </td>
 
                         <td class="p-3">
-                            <NuxtLink :to="`/customer/view/${item?.customer?.id}`" class="text-sm text-gray-500 hover:text-indigo-500 transition-all">{{ item?.customer?.fullname }} - {{ item?.customer?.company }} - {{ item?.customer?.phone }}</NuxtLink>
+                            <NuxtLink :to="`/customer/view/${item?.customer?.id}`" class="text-sm text-blue-500 hover:font-semibold transition-all truncate">{{ item?.customer?.fullname }}</NuxtLink>
                         </td>
 
                         <td class="p-3">
-                            <span class="text-gray-500 text-sm">{{ item?.details_count }}</span>
+                            <span class="text-sm text-gray-500 truncate">{{ item?.customer?.company }}</span>
                         </td>
 
                         <td class="p-3">
@@ -90,7 +90,7 @@
                         </td>
 
                         <td class="p-3">
-                            <span class="text-gray-500 text-xs">{{ item?.updated_at }}</span>
+                            <img :src="viewImage(item?.exhibition?.logo)" :alt="item?.exhibition?.title">
                         </td>
                     </tr>
                     
@@ -199,6 +199,6 @@
     }
 
     useHead(() => ({
-        title: 'Nhóm khách hàng'
+        title: 'Báo giá'
     }))
 </script>

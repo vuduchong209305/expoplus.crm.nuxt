@@ -101,8 +101,8 @@
         total: 0
     })
 
-    watch(() => route.query.page, (page) => {
-        fetch(Number(page) || 1)
+    watch(() => route.query.page, async (page) => {
+        await fetch(Number(page) || 1)
     }, { immediate: true })
 
     const activeTasks = computed(() => tasks.value.filter(t => !t.completed_at))

@@ -20,7 +20,9 @@
                     </div>
                     <div>
                         <label class="block text-sm text-gray-700 font-semibold mb-2">Giá</label>
-                        <input v-model="price" type="number" placeholder="Giá" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-indigo-500 transition-colors">
+                        <input :value="formatMoney(price)"
+                                        @input="(e) => handleMoneyInput(e, (val) => price = val)"
+                                        @keydown="onlyNumber" type="text" placeholder="Giá" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-indigo-500 transition-colors">
                     </div>
 
                     <div>
@@ -83,6 +85,11 @@
     const avatar = ref('')        // ảnh từ DB (edit)
     const file = ref<File | null>(null)
     const preview = ref('')      // preview ảnh mới
+
+    const {
+        onlyNumber,
+        handleMoneyInput
+    } = useMoneyInput()
 
     const triggerFile = () => {
         fileInput.value?.click()

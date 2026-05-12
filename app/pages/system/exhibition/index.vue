@@ -2,10 +2,10 @@
 	<div class="bg-white border-b px-4 sm:px-6 py-4 sm:py-3">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-                <h1 class="text-lg sm:text-xl font-semibold">Sản phẩm</h1>
-                <p class="text-sm text-gray-500 mt-0.5">Các sản phẩm bán cho khách hàng</p>
+                <h1 class="text-lg sm:text-xl font-semibold">Triển lãm</h1>
+                <p class="text-sm text-gray-500 mt-0.5">Danh sách các triển lãm, sự kiện</p>
             </div>
-            <NuxtLink to="/system/product/create" class="px-4 py-2 text-sm font-medium bg-white text-black border border-gray-500 rounded-lg hover:bg-black hover:text-white hover:border-white active:scale-95 transition-all"><i class="ti ti-plus me-2"></i>Thêm sản phẩm </NuxtLink>
+            <NuxtLink to="/system/exhibition/create" class="px-4 py-2 text-sm font-medium bg-white text-black border border-gray-500 rounded-lg hover:bg-black hover:text-white hover:border-white active:scale-95 transition-all"><i class="ti ti-plus me-2"></i>Thêm triển lãm </NuxtLink>
         </div>
     </div>
 
@@ -15,7 +15,7 @@
         	<div class="flex flex-wrap items-center gap-2">
                 
                 <form @submit.prevent="submitSearch" class="relative w-80">
-                    <input v-model="search" placeholder="Tìm tên sản phẩm..." class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
+                    <input v-model="search" placeholder="Tìm triển lãm..." class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
                     <!-- BUTTON INSIDE -->
                     <button type="submit" class="absolute right-1 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-indigo-600">
                         <i class="ti ti-search text-lg"></i>
@@ -34,14 +34,15 @@
                             <input type="checkbox" class="w-4 h-4 rounded">
                         </th>
                         <th class="p-3 text-sm text-center font-medium" width="5%">#</th>
-                        <th class="p-3 text-sm text-left font-medium" width="5%">Ảnh</th>
-                        <th class="p-3 text-sm text-left font-medium" width="65%">Tên sản phẩm</th>
-                        <th class="p-3 text-sm text-left font-medium" width="10%">Giá</th>
-                        <th class="p-3 text-sm text-left font-medium" width="10%">Đơn vị tính</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Logo</th>
+                        <th class="p-3 text-sm text-left font-medium" width="15%">Tên triển lãm</th>
+                        <th class="p-3 text-sm text-left font-medium" width="45%">Địa điểm</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Bắt đầu</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Kết thúc</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(item, index) in products" :key="index" class="border-b hover:bg-gray-100 transition-all">
+                    <tr v-for="(item, index) in exhibitions" :key="index" class="border-b hover:bg-gray-100 transition-all">
 
                         <td class="p-3">
                             <input type="checkbox" class="w-4 h-4 rounded">
@@ -57,7 +58,7 @@
                                     <!-- Menu -->
                                     <ul class="dropdown-menu hidden absolute mt-2 w-40 bg-white border rounded shadow-md py-1 z-50">
                                         <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm">
-                                            <NuxtLink :to="`/system/product/${item.id}`" class="block w-full">
+                                            <NuxtLink :to="`/system/exhibition/${item.id}`" class="block w-full">
                                                 <i class="ti ti-edit"></i>&nbsp;&nbsp;Sửa
                                             </NuxtLink>
                                         </li>
@@ -68,36 +69,32 @@
                         </td>
 
                         <td class="p-3">
-                            <img :src="viewImage(item?.avatar)" :alt="item?.title" width="100%" class="rounded-lg">
+                            <img :src="viewImage(item?.logo)" :alt="item?.title" width="100%" class="rounded-lg">
                         </td>
 
                         <td class="p-3">
-                            <NuxtLink :to="`/system/product/${item.id}`" class="text-blue-500">{{ item?.title }}</NuxtLink>
+                            <NuxtLink :to="`/system/exhibition/${item.id}`" class="text-blue-500">
+                                {{ item?.title }}
+                            </NuxtLink>
                         </td>
 
                         <td class="p-3">
-                            <span class="text-gray-500">{{ formatMoney(item?.price) }}</span>
+                            <span class="text-gray-500 text-sm">{{ item?.location }}</span>
                         </td>
 
                         <td class="p-3">
-                            <span class="text-gray-500">{{ item?.unit }}</span>
+                            <span class="text-gray-500 text-sm">{{ item?.start_date }}</span>
                         </td>
 
-
+                        <td class="p-3">
+                            <span class="text-gray-500 text-sm">{{ item?.end_date }}</span>
+                        </td>
                     </tr>
                     
                 </tbody>
             </table>
         
         </div>
-
-        <Pagination
-            :current-page="pagination.current_page"
-            :last-page="pagination.last_page"
-            :per-page="pagination.per_page"
-            :total="pagination.total"
-            @page-change="fetch"
-        />
 
     </div>
 </template>
@@ -110,38 +107,23 @@
         middleware: ['auth'],
     })
 
-    const pagination = ref({
-        current_page: 1,
-        last_page: 1,
-        per_page: 10,
-        total: 0
-    })
-
-    const route = useRoute()
-    const products = ref([])
+    const exhibitions = ref([])
     const search = ref('')
 
-    watch(() => route.query.page, (page) => {
-        fetch(Number(page) || 1)
-    }, { immediate: true })
+    onMounted(() => {
+        fetch()
+    })
 
     async function fetch(page = 1) {
 
-        const res = await useNuxtApp().$apiFetch(`product`, {
+        const res = await useNuxtApp().$apiFetch(`exhibition`, {
             params: {
-                page: page,
-                search: search.value,
+                search: search.value
             }
         });
 
         if (res.status) {
-            products.value = res.data.data
-            pagination.value = {
-                current_page: res.data.current_page,
-                last_page: res.data.last_page,
-                per_page: res.data.per_page,
-                total: res.data.total
-            }
+            exhibitions.value = res.data
         } else {
             notify.error({
                 title: 'Thông báo',
@@ -167,7 +149,7 @@
             cancelButtonText: "Đóng"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const res = await useNuxtApp().$apiFetch(`product/delete`, {
+                const res = await useNuxtApp().$apiFetch(`exhibition/delete`, {
                     method: 'POST',
                     body: {
                         id

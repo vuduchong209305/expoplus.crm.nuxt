@@ -31,10 +31,35 @@
                     <NuxtLink to="/task" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Công việc</NuxtLink>
                     <NuxtLink to="/calendar" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Lịch của tôi</NuxtLink>
                     <NuxtLink to="/marketing/campaign" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Chiến dịch</NuxtLink>
-                    <a href="#" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Hợp đồng</a>
+                    <NuxtLink to="/contract/quotation" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Báo giá</NuxtLink>
                 </nav>
                 <!-- Right Actions -->
                 <div class="flex items-center gap-1 sm:gap-2 ml-auto">
+                    <div class="flex items-center gap-3 hover:bg-white transition-all">
+
+                        <!-- ICON / LOGO -->
+                        <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
+                            <i class="ti ti-building text-indigo-600 text-lg"></i>
+                        </div>
+
+                        <!-- INFO -->
+                        <div class="leading-tight">
+                            <div class="flex items-center gap-2">
+                                <h4 class="text-xs font-semibold text-gray-800">
+                                    {{ user?.organizer?.name }}
+                                </h4>
+
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-green-100 text-green-600 font-medium">
+                                    Active
+                                </span>
+                            </div>
+
+                            <p class="text-xs text-gray-500 mt-0.5">
+                                {{ user?.organizer?.email }}
+                            </p>
+                        </div>
+
+                    </div>
                     <button class="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">
                         <i class="ti ti-search text-xl"></i>
                     </button>
@@ -59,7 +84,7 @@
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center gap-2">
                                             <h3 class="font-semibold truncate">{{ user?.fullname }}</h3>
-                                            <span class="text-xs bg-gray-200 px-2 py-0.5 rounded font-medium">Pro</span>
+                                            <span class="text-xs bg-gray-200 px-2 py-0.5 rounded font-medium">{{ user?.role?.name }}</span>
                                         </div>
                                         <p class="text-sm text-gray-500 truncate">{{ user?.email }}</p>
                                     </div>
@@ -193,11 +218,33 @@
                     to: '/system/product'
                 },
                 {
-                    name: 'Nhân viên',
+                    name: 'Thành viên',
                     to: '/system/user'
+                },
+                {
+                    name: 'Triển lãm',
+                    to: '/system/exhibition'
                 }
             ]
-        }
+        },
+        {
+            name: 'Báo cáo',
+            icon: 'ti ti-brand-google-analytics',
+            children: [
+                {
+                    name: 'Báo cáo doanh thu',
+                    to: '/report/revenue'
+                },
+                {
+                    name: 'Báo cáo khách hàng',
+                    to: '/report/customer'
+                },
+                {
+                    name: 'Báo cáo công việc',
+                    to: '/report/task'
+                }
+            ]
+        },
     ]
 
     onMounted(() => {

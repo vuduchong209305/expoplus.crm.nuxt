@@ -35,8 +35,9 @@
                             <input type="checkbox" class="w-4 h-4 rounded">
                         </th>
                         <th class="p-3 text-sm text-left font-medium" width="20%">Nhóm khách hàng</th>
-                        <th class="p-3 text-sm text-left font-medium" width="40%">Ghi chú</th>
-                        <th class="p-3 text-sm text-left font-medium" width="15%">Số lượng KH</th>
+                        <th class="p-3 text-sm text-left font-medium" width="35%">Ghi chú</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Giao cho</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Số lượng KH</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Ngày tạo</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Ngày cập nhật</th>
                     </tr>
@@ -49,11 +50,15 @@
                         </td>
 
                         <td class="p-3">
-                            <NuxtLink :to="`/marketing/customers/${item.id}`" class="text-indigo-600 text-sm hover:font-medium">{{ item?.title }}</NuxtLink>
+                            <NuxtLink :to="`/marketing/customers/${item.id}`" class="text-blue-500 text-sm hover:font-medium">{{ item?.title }}</NuxtLink>
                         </td>
 
                         <td class="p-3">
                             <span class="text-gray-500 text-sm">{{ item?.note }}</span>
+                        </td>
+
+                        <td class="p-3">
+                            <span class="text-gray-500 text-sm">{{ item?.assigned?.fullname }}</span>
                         </td>
 
                         <td class="p-3">
@@ -104,8 +109,8 @@
     const data = ref([])
     const search = ref('')
 
-    watch(() => route.query.page, (page) => {
-        fetch(Number(page) || 1)
+    watch(() => route.query.page, async (page) => {
+        await fetch(Number(page) || 1)
     }, { immediate: true })
 
     async function fetch(page = 1) {

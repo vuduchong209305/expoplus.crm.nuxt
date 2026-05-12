@@ -2,25 +2,25 @@
     <form @submit.prevent="submit" class="space-y-6">
         <!-- TITLE -->
         <div>
-            <input v-model="form.title" type="text" placeholder="Tên tác vụ..." class="w-full text-lg font-semibold border-b border-gray-300 focus:border-indigo-500 focus:outline-none pb-2" />
+            <input v-model="form.title" type="text" placeholder="Tên tác vụ..." class="w-full text-lg font-semibold border-b border-gray-300 focus:border-indigo-500 focus:outline-none pb-2" required/>
         </div>
         <!-- META -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
             <div>
-                <label class="text-sm text-gray-700 mb-1 block">Bắt đầu</label>
-                <input v-model="form.start_date" type="date" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
+                <label class="text-sm text-gray-700 mb-1 block">Bắt đầu <span class="text-red-500">*</span></label>
+                <input type="text" ref="startRef" placeholder="Ngày bắt đầu *" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500" required/>
             </div>
 
             <div>
-                <label class="text-sm text-gray-700 mb-1 block">Kết thúc</label>
-                <input v-model="form.end_date" type="date" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
+                <label class="text-sm text-gray-700 mb-1 block">Kết thúc <span class="text-red-500">*</span></label>
+                <input type="text" ref="endRef" placeholder="Ngày kết thúc *" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500" required/>
             </div>
         </div>
 
         <div>
-            <label class="text-sm text-gray-700 mb-1 block">Giao cho</label>
-            <select v-model="form.assigned_to" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500">
+            <label class="text-sm text-gray-700 mb-1 block">Giao cho <span class="text-red-500">*</span></label>
+            <select v-model="form.assigned_to" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500" required>
                 <option value="">-- Giao cho --</option>
                 <option v-for="u in props.users" :key="u.id" :value="u.id">
                     {{ u.fullname }}
@@ -65,6 +65,9 @@
 
 <script setup lang="ts">
 
+    import flatpickr from 'flatpickr'
+    import 'flatpickr/dist/l10n/vn.js'
+
     import Swal from 'sweetalert2'
 
     const props = defineProps({
@@ -78,6 +81,12 @@
         }
     })
 
+    const startRef = ref<HTMLInputElement | null>(null)
+    const endRef = ref<HTMLInputElement | null>(null)
+
+    let startPicker: any = null
+    let endPicker: any = null
+
     const emit = defineEmits(['saved', 'deleted', 'close'])
 
     const form = reactive({
@@ -89,16 +98,6 @@
         completed_at: '',
         note: '',
         progress: 0
-    })
-
-    // sync dữ liệu khi mở task
-    watch(() => props.task, (val) => {
-        if (val) {
-            Object.assign(form, val)
-            form.assigned_to = val.assigned_to ?? ''
-        }
-    }, {
-        immediate: true
     })
 
     const submit = async () => {
@@ -164,4 +163,88 @@
             }
         });
     }
+
+    onMounted(() => {
+
+        endPicker = flatpickr(endRef.value!, {
+            locale: 'vn',
+            dateFormat: 'Y-m-d',
+            minDate: 'today',
+            onChange: (dates) => {
+                if (dates.length) {
+                    form.end_date.value = formatDate(dates[0])
+                }
+            }
+        })
+
+        startPicker = flatpickr(startRef.value!, {
+            locale: 'vn',
+            dateFormat: 'Y-m-d',
+            minDate: 'today',
+            onChange: (dates) => {
+                if (dates.length) {
+                    form.start_date.value = formatDate(dates[0])
+                }
+                endPicker.set('minDate', dates[0])
+            }
+        })
+    })
+
+    onMounted(() => {
+
+        endPicker = flatpickr(endRef.value!, {
+            locale: 'vn',
+            dateFormat: 'Y-m-d',
+            minDate: 'today',
+
+            onChange: (dates) => {
+
+                if (dates.length) {
+
+                    form.end_date = formatDate(dates[0])
+
+                }
+            }
+        })
+
+        startPicker = flatpickr(startRef.value!, {
+            locale: 'vn',
+            dateFormat: 'Y-m-d',
+            minDate: 'today',
+
+            onChange: (dates) => {
+
+                if (dates.length) {
+
+                    form.start_date = formatDate(dates[0])
+
+                }
+
+                endPicker.set('minDate', dates[0])
+            }
+        })
+    })
+        
+    watch(() => props.task, (val) => {
+
+        if (val) {
+
+            Object.assign(form, val)
+
+            nextTick(() => {
+
+                if (form.start_date) {
+                    startPicker?.setDate(form.start_date, true)
+                }
+
+                if (form.end_date) {
+                    endPicker?.setDate(form.end_date, true)
+                }
+
+            })
+        }
+
+    }, {
+        immediate: true
+    })
 </script>

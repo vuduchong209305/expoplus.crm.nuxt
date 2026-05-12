@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     css: [
         '@tabler/icons-webfont/dist/tabler-icons.min.css',
         'flatpickr/dist/flatpickr.css',
+        'tom-select/dist/css/tom-select.css',
         '~/assets/css/style.css'
     ],
     modules: [

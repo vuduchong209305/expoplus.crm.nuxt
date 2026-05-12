@@ -12,40 +12,95 @@
     <div class="p-4 lg:p-6">
 
     	<div class="bg-white p-4 rounded-lg mb-3 border">
-        	<div class="flex flex-wrap items-center justify-between gap-2">
+        	<div class="flex flex-wrap justify-between gap-2">
                 
                 <div>
-                	<select v-model="selectedProductId" class="text-sm border px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500">
-				        <option value="">-- Chọn sản phẩm --</option>
-				        <option v-for="p in products" :key="p.id" :value="p.id">
-				            {{ p.title }} - {{ formatMoney(p.price) }}
-				        </option>
-				    </select>
-	                &nbsp;
-	                <button type="button" @click="addProduct" class="px-4 py-2 bg-indigo-500 text-white rounded-md text-sm">
-				        Thêm
-				    </button>
-                </div>
-                
-                <div v-if="quotation?.code">
-                	<span class="text-sm">Mã báo giá: <span class="font-semibold text-green-600">{{ quotation?.code }}</span></span>
-                </div>
+                	<div class="mb-2">
+                		<label class="block text-sm text-gray-700 font-semibold mb-1">Chọn sản phẩm</label>
+	                	<select v-model="selectedProductId" class="text-sm border px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500">
+					        <option value="">-- Chọn sản phẩm --</option>
+					        <option v-for="p in products" :key="p.id" :value="p.id">
+					            {{ p.title }} - {{ formatMoney(p.price) }}
+					        </option>
+					    </select>
+		                &nbsp;
+		                <button type="button" @click="addProduct" class="px-4 py-2 bg-indigo-500 text-white rounded-md text-sm">
+					        Thêm
+					    </button>
+                	</div>
+                	
+                	<div class="mb-2">
+                		<label class="block text-sm text-gray-700 font-semibold mb-1">Chọn sự kiện</label>
+                		<select v-model="selectedExhibition" class="w-full text-sm border px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500">
+	                		<option value="">-- Chọn sự kiện --</option>
+					        <option v-for="e in exhibitions" :key="e.id" :value="e.id">
+					            {{ e.title }}
+					        </option>
+	                	</select>
+                	</div>
 
-                <div>
-                	<select v-model="selectedExhibition" class="text-sm border px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500">
-                		<option value="">-- Chọn sự kiện --</option>
-				        <option v-for="e in exhibitions" :key="e.id" :value="e.id">
-				            {{ e.title }}
-				        </option>
-                	</select>
-                	&nbsp;
-                	<select v-model="selectedCustomer" class="text-sm border px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500">
-                		<option value="">-- Chọn khách hàng --</option>
-				        <option v-for="c in customers" :key="c.id" :value="c.id">
-				            {{ c.fullname }} - {{ c.phone }} - {{ c.company }}
-				        </option>
-                	</select>
+                	<div>
+                		<label class="block text-sm text-gray-700 font-semibold mb-1">Chọn khách hàng</label>
+                		<select ref="customerSelect"></select>
+                	</div>
+			        
                 </div>
+                
+                <div class="flex flex-col gap-3 text-sm">
+
+				    <!-- MÃ BÁO GIÁ -->
+					<div v-if="quotation?.code" class="inline-flex items-center gap-2">
+					    <span class="text-gray-500">Mã báo giá</span>
+					    <span class="px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-semibold text-xs border border-green-200">
+					        {{ quotation?.code }}
+					    </span>
+					</div>
+					<!-- KHÁCH HÀNG -->
+					<div v-if="customer" class="bg-gray-50 rounded-xl px-4 py-3 border border-gray-200">
+					    <div class="flex items-center justify-between mb-2">
+					        <h3 class="font-semibold text-gray-800"> Thông tin khách hàng </h3>
+					    </div>
+					    <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-[13px]">
+					        <div>
+					            <span class="text-gray-400">Doanh nghiệp</span>
+					            <p class="font-medium text-gray-700">
+					                {{ customer?.company || 'N/A' }}
+					            </p>
+					        </div>
+					        <div>
+					            <span class="text-gray-400">Họ tên</span>
+					            <p class="font-medium text-gray-700">
+					                {{ customer?.fullname || 'N/A' }}
+					            </p>
+					        </div>
+					        <div>
+					            <span class="text-gray-400">Điện thoại</span>
+					            <p class="text-gray-700">
+					                {{ customer?.phone || 'N/A' }}
+					            </p>
+					        </div>
+					        <div>
+					            <span class="text-gray-400">Email</span>
+					            <p class="text-gray-700 break-all">
+					                {{ customer?.email || 'N/A' }}
+					            </p>
+					        </div>
+					        <div>
+					            <span class="text-gray-400">Ngày tạo báo giá</span>
+					            <p class="text-gray-700">
+					                {{ quotation?.created_at || 'N/A' }}
+					            </p>
+					        </div>
+					        <div>
+					            <span class="text-gray-400">Cập nhật báo giá</span>
+					            <p class="text-gray-700 break-all">
+					                {{ quotation?.updated_at || 'N/A' }}
+					            </p>
+					        </div>
+					    </div>
+					</div>
+
+				</div>
             </div>
         </div>
 
@@ -147,7 +202,13 @@
 	                	</tr>
 	                	<tr>
 	                		<th colspan="6" class="p-3 text-right font-medium text-sm">Giảm giá:</th>
-	                		<th colspan="2" class="p-3 text-right font-medium text-sm"><input v-model.number="discount" type="number" class="w-24 text-right border-b border-gray-300 focus:border-indigo-500 focus:outline-none pb-2"/></th>
+	                		<th colspan="2" class="p-3 text-right font-medium text-sm">
+	                			<input :value="formatMoney(discount)"
+									    @input="(e) => handleMoneyInput(e, (val) => discount = val)"
+									    @keydown="onlyNumber"
+									    type="text"
+									    class="w-24 text-right border-b border-gray-300 focus:border-indigo-500 focus:outline-none pb-2"/>
+							</th>
 	                	</tr>
 	                	<tr>
 	                		<th colspan="6" class="p-3 text-right font-medium text-green-600">Thành tiền:</th>
@@ -179,6 +240,7 @@
 <script setup lang="ts">
 	
 	import Swal from 'sweetalert2'
+	import TomSelect from 'tom-select'
 
 	definePageMeta({
         middleware: ['auth'],
@@ -206,9 +268,82 @@
 	const selectedCustomer = ref('')
 	const note = ref('')
 
-	onMounted(async () => {
-        await fetch()
+	const {
+	    onlyNumber,
+	    handleMoneyInput
+	} = useMoneyInput()
+
+	onMounted(() => {
+        fetch()
+        fetchProducts()
+        fetchExhibitions()
     })
+
+	const customerSelect = ref()
+
+	onMounted(() => {
+
+	    new TomSelect(customerSelect.value, {
+
+	        valueField: 'id',
+	        labelField: 'fullname',
+	        searchField: ['fullname', 'phone', 'company', 'email'],
+
+	        placeholder: 'Tìm khách hàng...',
+
+	        loadThrottle: 400,
+
+	        load: async (query, callback) => {
+
+	            if (!query.length) return callback()
+
+	            const res = await useNuxtApp().$apiFetch('customer', {
+	                method: 'POST',
+	                body: {
+	                    search: query
+	                }
+	            })
+
+	            if (res.status) {
+	                callback(res.data.data)
+	            } else {
+	                callback()
+	            }
+	        },
+
+	        render: {
+
+	            option(item: any, escape: any) {
+
+	                return `
+	                    <div class="py-2">
+	                        <div class="font-medium">
+	                            ${escape(item.fullname)}
+	                        </div>
+
+	                        <div class="text-xs text-gray-500">
+	                            ${escape(item.phone || '')}
+	                            ${item.company ? '• ' + escape(item.company) : ''}
+	                        </div>
+	                    </div>
+	                `
+	            },
+
+	            item(item: any, escape: any) {
+
+	                return `
+	                    <div>
+	                        ${escape(item.fullname)}
+	                    </div>
+	                `
+	            }
+	        },
+
+	        onChange(value) {
+	            selectedCustomer.value = value
+	        }
+	    })
+	})
 
 	const fetch = async() => {
         if (isEdit.value) {
@@ -346,6 +481,14 @@
             return
 		}
 
+		if(finalTotal.value < 0) {
+			notify.error({
+                title: 'Có lỗi',
+                description: 'Thành tiền đang bị âm'
+            })
+            return
+		}
+
 	    const res = await useNuxtApp().$apiFetch('quotation/save', {
 	        method: 'POST',
 	        body: {
@@ -366,6 +509,11 @@
             })
 
             navigateTo(`/contract/quotation/${res.data.id}`)
+	    } else {
+	    	notify.error({
+                title: 'Có lỗi',
+                description: res.message
+            })
 	    }
 	}
 
@@ -475,9 +623,4 @@
 	    }
 	}
 
-	onMounted(() => {
-        fetchProducts()
-        fetchCustomers()
-        fetchExhibitions()
-    })
 </script>

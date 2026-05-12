@@ -14,10 +14,10 @@
 		    <!-- HEADER -->
 		    <div class="grid grid-cols-12 text-sm font-semibold text-gray-500 pb-3 border-b mb-2">
 		        <div class="col-span-5">Công việc</div>
+		        <div class="col-span-2">Tiến độ</div>
+		        <div class="col-span-2">Phụ trách</div>
 		        <div class="col-span-1">Bắt đầu</div>
 		        <div class="col-span-1">Kết thúc</div>
-		        <div class="col-span-2">Phụ trách</div>
-		        <div class="col-span-2">Tiến độ</div>
 		        <div class="col-span-1">Ngày hoàn thành</div>
 		    </div>
 		    <!-- LIST -->
@@ -38,21 +38,7 @@
 			                    {{ task.title }}
 			                </div>
 			            </div>
-			            <!-- START -->
-			            <div class="col-span-1 text-sm" :class="task.completed_at ? 'line-through italic text-gray-400' : 'text-gray-800'">
-			                {{ task.start_date }}
-			            </div>
-			            <!-- END -->
-			            <div class="col-span-1 text-sm" :class="task.completed_at ? 'line-through italic text-gray-400' : 'text-gray-800'">
-			                {{ task.end_date }}
-			            </div>
-			            <!-- ASSIGNEE -->
-			            <div class="col-span-2 flex items-center gap-2">
-			                <img :src="viewImage(task?.user?.avatar)" class="w-6 h-6 rounded-full" />
-			                <div class="text-sm" :class="task.completed_at ? 'line-through italic text-gray-400' : 'text-gray-800'">
-			                    {{ task.user?.fullname || 'Chưa giao' }}
-			                </div>
-			            </div>
+
 			            <!-- PROGRESS -->
 			            <div class="col-span-2">
 			                <div class="flex items-center gap-2">
@@ -63,6 +49,24 @@
 			                        {{ task.progress || 0 }}% </span>
 			                </div>
 			            </div>
+
+			            <!-- ASSIGNEE -->
+			            <div class="col-span-2 flex items-center gap-2">
+			                <img :src="viewImage(task?.user?.avatar)" class="w-6 h-6 rounded-full" />
+			                <div class="text-sm" :class="task.completed_at ? 'line-through italic text-gray-400' : 'text-gray-800'">
+			                    {{ task.user?.fullname || 'Chưa giao' }}
+			                </div>
+			            </div>
+
+			            <!-- START -->
+			            <div class="col-span-1 text-sm" :class="task.completed_at ? 'line-through italic text-gray-400' : 'text-gray-800'">
+			                {{ task.start_date }}
+			            </div>
+			            <!-- END -->
+			            <div class="col-span-1 text-sm" :class="task.completed_at ? 'line-through italic text-gray-400' : 'text-gray-800'">
+			                {{ task.end_date }}
+			            </div>
+			            
 			            <!-- COMPLETED TIME -->
 			            <div class="col-span-1 text-xs italic text-gray-500">
 			                {{ task.completed_at || '' }}
@@ -77,13 +81,13 @@
 	<div class="fixed bottom-0 left-0 right-0 bg-white border-t px-4 py-3 shadow">
 	    <form @submit.prevent="addTask" class="max-w-5xl mx-auto grid grid-cols-12 gap-2 items-center">
 	        <!-- TASK NAME -->
-	        <input v-model="form.title" placeholder="Thêm công việc..." class="col-span-4 px-3 py-2 rounded-lg text-sm border border-indigo-500 focus:outline-none focus:border-indigo-700" autofocus required />
+	        <input v-model="form.title" placeholder="Thêm công việc...*" class="col-span-4 px-3 py-2 rounded-lg text-sm border border-indigo-500 focus:outline-none focus:border-indigo-700" autofocus required />
 	        <!-- START DATE -->
-	        <input type="date" v-model="form.start_date" class="col-span-2 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
+	        <input type="text" ref="startRef" placeholder="Ngày bắt đầu *" class="col-span-2 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500" required/>
 	        <!-- END DATE -->
-	        <input type="date" v-model="form.end_date" class="col-span-2 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
+	        <input type="text" ref="endRef" placeholder="Ngày kết thúc *" class="col-span-2 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500" required/>
 	        <!-- ASSIGNEE -->
-	        <select v-model="form.assigned_to" class="col-span-3 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500">
+	        <select v-model="form.assigned_to" class="col-span-3 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-indigo-500" required>
 	            <option value="">-- Giao cho --</option>
 	            <option v-for="u in users" :key="u.id" :value="u.id">
 	                {{ u.fullname }}
@@ -101,6 +105,9 @@
 
 <script setup lang="ts">
 
+	import flatpickr from 'flatpickr'
+    import 'flatpickr/dist/l10n/vn.js'
+
 	import draggable from 'vuedraggable'
 
 	definePageMeta({
@@ -112,6 +119,12 @@
 	const open = ref(false)
 	const users = ref([])
 
+	const startRef = ref<HTMLInputElement | null>(null)
+    const endRef = ref<HTMLInputElement | null>(null)
+
+    let startPicker: any = null
+    let endPicker: any = null
+
 	const form = reactive({
 		title: '',
 		start_date: '',
@@ -121,9 +134,9 @@
 		completed_at: ''
 	})
 
-	onMounted(() => {
-    	fetch()
-    	userList()
+	onMounted(async() => {
+    	await fetch()
+    	await userList()
     });
 
 	async function fetch() {
@@ -141,6 +154,15 @@
     }
 
 	async function addTask() {
+
+		if(form.start_date == '' || form.end_date == '') {
+			notify.error({
+                title: 'Thông báo',
+                description: 'Vui lòng nhập ngày bắt đầu - ngày kết thúc'
+            })
+            return
+		}
+
 	    const res = await useNuxtApp().$apiFetch('task/store', {
 	        method: 'POST',
 	        body: form
@@ -239,6 +261,32 @@
 	        }
 	    })
 	}
+
+	onMounted(() => {
+
+        endPicker = flatpickr(endRef.value!, {
+            locale: 'vn',
+            dateFormat: 'Y-m-d',
+            minDate: 'today',
+            onChange: (dates) => {
+                if (dates.length) {
+                    form.end_date = formatDate(dates[0])
+                }
+            }
+        })
+
+        startPicker = flatpickr(startRef.value!, {
+            locale: 'vn',
+            dateFormat: 'Y-m-d',
+            minDate: 'today',
+            onChange: (dates) => {
+                if (dates.length) {
+                    form.start_date = formatDate(dates[0])
+                }
+                endPicker.set('minDate', dates[0])
+            }
+        })
+    })
 
 	useHead(() => ({
         title: 'Nhiệm vụ công việc'

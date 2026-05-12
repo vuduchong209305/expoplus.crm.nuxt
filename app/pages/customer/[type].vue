@@ -12,54 +12,28 @@
     <div class="p-4 lg:p-6">
 
         <div class="bg-white p-4 rounded-lg mb-3 border">
-            <div class="flex flex-wrap items-center gap-2">
+            <div class="flex flex-wrap items-center justify-between">
                 
-                <form @submit.prevent="submitSearch" class="relative w-80">
-                    <input v-model="search" placeholder="Tìm tên, email, số điện thoại..." class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
-                    <!-- BUTTON INSIDE -->
-                    <button type="submit" class="absolute right-1 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-indigo-600">
-                        <i class="ti ti-search text-lg"></i>
-                    </button>
-                </form>
+                <div class="flex flex-wrap items-center gap-2">
+                    <form @submit.prevent="submitSearch" class="relative w-80">
+                        <input v-model="search" placeholder="Tìm tên, email, số điện thoại..." class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
+                        <!-- BUTTON INSIDE -->
+                        <button type="submit" class="absolute right-1 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-indigo-600">
+                            <i class="ti ti-search text-lg"></i>
+                        </button>
+                    </form>
+                    
+                    <!-- FILTER BUTTON -->
+                    <button @click="openFilterCanvas" class="px-3 py-2 border border-indigo-500 text-indigo-500 hover:bg-indigo-600 hover:text-white rounded-lg text-sm transition-all"> + Bộ lọc </button>
+                    <!-- RESET -->
+                    <button @click="resetFilter" class="px-3 py-2 text-sm text-red-500"> Reset </button>
+                </div>
                 
-                <!-- FILTER BUTTON -->
-                <button @click="openFilterCanvas" class="px-3 py-2 border border-indigo-500 text-indigo-500 hover:bg-indigo-600 hover:text-white rounded-lg text-sm transition-all"> + Bộ lọc </button>
-                <!-- RESET -->
-                <button @click="resetFilter" class="px-3 py-2 text-sm text-red-500"> Reset </button>
-            </div>
-            <!-- FILTER PANEL -->
-            <div v-if="showFilter" class="mt-3 border rounded-lg p-3 bg-gray-50">
-                <div class="space-y-2">
-                    <div v-for="(f, index) in filters" :key="index" class="flex gap-2 items-center">
-                        <!-- FIELD -->
-                        <select v-model="f.field" class="border px-2 py-1 rounded text-sm">
-                            <option value="fullname">Họ tên</option>
-                            <option value="email">Email</option>
-                            <option value="phone">SĐT</option>
-                            <option value="company">Doanh nghiệp</option>
-                            <option value="bookmark">Đánh dấu</option>
-                        </select>
-                        <!-- OPERATOR -->
-                        <select v-model="f.operator" class="border px-2 py-1 rounded text-sm">
-                            <option value="contains">chứa</option>
-                            <option value="=">=</option>
-                            <option value="!=">!=</option>
-                        </select>
-                        <!-- VALUE -->
-                        <input v-model="f.value" class="border px-2 py-1 rounded text-sm flex-1" placeholder="Giá trị..." />
-                        <!-- REMOVE -->
-                        <button @click="removeFilter(index)" class="text-red-500">✕</button>
-                    </div>
-                    <button @click="addFilter" class="text-sm text-indigo-500"> + Thêm điều kiện </button>
+                <div>
+                    <button class="border border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white text-sm rounded-lg py-1 px-3 transition-all" @click="assigned">Giao cho <i class="ti ti-arrow-bar-right"></i></button>
                 </div>
             </div>
-            <!-- FILTER CHIPS -->
-            <div class="flex flex-wrap gap-2 mt-3">
-                <div v-for="(f, index) in filters" :key="'chip-'+index" class="px-2 py-1 bg-indigo-100 text-indigo-600 text-xs rounded flex items-center gap-1">
-                    {{ f.field }} {{ f.operator }} {{ f.value }}
-                    <button @click="removeFilter(index)">✕</button>
-                </div>
-            </div>
+            
         </div>
 
         <div class="bg-white border border-b-0 rounded-lg">
@@ -68,13 +42,13 @@
                 <thead class="border-b">
                     <tr>
                         <th class="p-3 text-left w-12" width="5%">
-                            <input type="checkbox" class="w-4 h-4 rounded">
+                            <input type="checkbox" class="w-4 h-4 rounded" :checked="isAllSelected" @change="toggleAll">
                         </th>
                         <th class="p-3 text-left font-medium" width="5%">#</th>
-                        <th class="p-3 text-left font-medium" width="20%">Họ tên</th>
+                        <th class="p-3 text-left font-medium" width="15%">Họ tên</th>
                         <th class="p-3 text-left font-medium" width="20%">Email</th>
                         <th class="p-3 text-left font-medium" width="15%">Số điện thoại</th>
-                        <th class="p-3 text-left font-medium" width="30%">Doanh nghiệp</th>
+                        <th class="p-3 text-left font-medium" width="35%">Doanh nghiệp</th>
                         <th class="p-3 text-left font-medium" width="15%">Giao cho</th>
                         
                     </tr>
@@ -83,7 +57,7 @@
                     <tr v-for="(customer, index) in customers" :key="index" class="border-b hover:bg-gray-100 transition-all">
 
                         <td class="p-3">
-                            <input type="checkbox" class="w-4 h-4 rounded">
+                            <input type="checkbox" class="w-4 h-4 rounded" :checked="isChecked(customer)" @change="toggleItem(customer)">
                         </td>
 
                         <td class="p-3">
@@ -145,9 +119,10 @@
         />
     </div>
 
-    <Offcanvas :open="openCanvas" @close="openCanvas = false">
+    <Offcanvas :open="openCanvas" @close="openCanvas = false" :title="canvasTitle">
         <CustomerDetail v-if="canvasType === 'customer'" :customer="selectedCustomer" />
         <FilterBuilder v-else-if="canvasType === 'filter'" />
+        <AssignedTo v-else-if="canvasType === 'assigned'" :customers="checkbox" @saved="handleSave" />
     </Offcanvas>
 
 </template>
@@ -155,7 +130,6 @@
 <script setup lang="ts">
 
 	import Swal from 'sweetalert2'
-    import debounce from 'lodash/debounce'
 
     definePageMeta({
         middleware: ['auth'],
@@ -184,12 +158,18 @@
     })
 
     const search = ref('')
-    const showFilter = ref(false)
-    const filters = ref([])
     const customers = ref < any[] > ([])
 
     const openCanvas = ref(false)
     const canvasType = ref<'customer' | 'filter' | null>(null)
+
+    const {
+        selected: checkbox,
+        toggleItem,
+        toggleAll,
+        isAllSelected,
+        isChecked
+    } = useCheckboxTable(customers)
 
     const openCustomer = (customer) => {
         selectedCustomer.value = customer
@@ -202,6 +182,19 @@
         openCanvas.value = true
     }
 
+    const assigned = () => {
+        if(checkbox.value.length == 0) {
+            notify.error({
+                title: 'Thông báo',
+                description: 'Vui lòng chọn khách hàng'
+            })
+            return
+        }
+
+        canvasType.value = 'assigned'
+        openCanvas.value = true
+    }
+
     async function fetch(page = 1) {
 
         const res = await useNuxtApp().$apiFetch(`customer`, {
@@ -209,8 +202,7 @@
             body: {
             	type_id: typeId.value,
                 page: page,
-                search: search.value,
-                filters: filters.value
+                search: search.value
             }
         })
 
@@ -293,37 +285,57 @@
         });
     }
 
-    // FILTER
-    const addFilter = () => {
-        filters.value.push({
-            field: 'fullname',
-            operator: 'contains',
-            value: ''
-        })
-    }
-
-    const removeFilter = (index) => {
-        filters.value.splice(index, 1)
-    }
-
-    const resetFilter = () => {
-        search.value = ''
-        filters.value = []
-    }
-
     async function submitSearch() {
         fetch()
     }
+
+    const handleSave = async(user) => {
+        if(checkbox.value.length == 0) {
+            notify.error({
+                title: 'Thông báo',
+                description: 'Vui lòng chọn khách hàng'
+            })
+            return
+        }
+
+        const res = await useNuxtApp().$apiFetch(`customer/assignedTo`, {
+            method: 'POST',
+            body: {
+                user_id: user.id,
+                customers: checkbox.value.map(i => i.id)
+            }
+        })
+
+        if (res.status) {
+            notify.success({
+                title: 'Thông báo',
+                description: res.message
+            })
+            openCanvas.value = false
+            fetch(route.query.page)
+        } else {
+            notify.error({
+                title: 'Thông báo',
+                description: res.message
+            })
+        }
+    }
+
+    const canvasTitle = computed(() => {
+        switch (canvasType.value) {
+            case 'customer':
+                return `Xem nhanh khách hàng`
+            case 'filter':
+                return 'Bộ lọc'
+            case 'assigned':
+                return 'Giao cho'
+            default:
+                return '#'
+        }
+    })
 
     useHead(() => ({
         title: type?.value == 'lead' ? 'Danh sách Lead' : 'Danh sách Contact'
     }))
 
-    // 🔥 auto fetch khi filter đổi
-    // watch(
-    //     [search, filters],
-    //     debounce(fetch, 500), {
-    //         deep: true
-    //     }
-    // )
 </script>
