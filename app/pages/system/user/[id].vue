@@ -36,7 +36,7 @@
 	    	</div>
 
 	    	<div class="bg-white px-5 py-4 rounded mb-5">
-	    		<h4 class="font-semibold text-lg pb-3 mb-3">Đổi mật khẩu</h4>
+	    		<h4 class="font-semibold text-lg pb-3 mb-3">Cài đặt Mật khẩu</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label class="block text-sm text-gray-700 font-semibold mb-2">Mật khẩu mới</label>
@@ -50,8 +50,20 @@
                 </div>
 	    	</div>
 
+	    	<div class="bg-white px-5 py-4 rounded mb-5" v-if="form?.is_admin != 1">
+	    		<h4 class="font-semibold text-lg pb-3 mb-3">Phân quyền</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                	<div>
+                		<label class="block text-sm text-gray-700 font-semibold mb-2">Chọn nhóm quyền <span class="text-red-500">*</span></label>
+	                    <select v-model="form.role_id" class="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-indigo-500 transition-colors" required>
+	                   		<option v-for="(item, index) in roles" :value="item?.id" :key="item?.id">{{ item?.name }}</option>
+	                   	</select>
+                	</div>
+                </div>
+	    	</div>
+
 	    	<div class="bg-white px-5 py-4 rounded mb-5">
-	    		<h4 class="font-semibold text-lg pb-3 mb-3">Đổi ảnh đại diện</h4>
+	    		<h4 class="font-semibold text-lg pb-3 mb-3">Ảnh đại diện</h4>
 	    		<div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div class="flex items-center justify-between gap-3">
 		                <div class="relative">
@@ -84,6 +96,7 @@
     const route = useRoute()
     const id = route.params.id
     const isEdit = computed(() => id && id !== 'create')
+    const roles = ref([])
 
     const form = reactive({
 	    fullname: '',
@@ -92,7 +105,9 @@
 	    birthday: '',
 	    password: '',
 	    password_confirmation: '',
-	    avatar: ''
+	    avatar: '',
+	    role_id: '',
+	    is_admin: ''
 	})
 
     const fileInput = ref<HTMLInputElement | null>(null)
@@ -131,23 +146,34 @@
         }
     }
 
+    const fetchRole = async() => {
+        const res = await useNuxtApp().$apiFetch(`role`)
+        if (res.status) {
+            roles.value = res.data
+        }
+        
+    }
+
     async function submit() {
 		if (!validate()) return
 
 		const formData = new FormData()
 
+		formData.append('id', isEdit.value ? String(id) : '')
 	    formData.append('fullname', form.fullname)
 	    formData.append('email', form.email)
 	    formData.append('phone', form.phone || '')
 	    formData.append('birthday', form.birthday || '')
+	    formData.append('role_id', form.role_id || '')
+	    formData.append('avatar_current', form.avatar || '')
 
 	    if (form.password) {
 	        formData.append('password', form.password)
 	        formData.append('password_confirmation', form.password_confirmation)
 	    }
 
-	    if (avatar.value) {
-	        formData.append('avatar', avatar.value)
+	    if (file.value) {
+	        formData.append('avatar', file.value)
 	    }
 
 		const res = await useNuxtApp().$apiFetch('user/save', {
@@ -186,5 +212,6 @@
 
     onMounted(async () => {
         await fetch()
+        await fetchRole()
     })
 </script>

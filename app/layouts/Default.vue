@@ -74,17 +74,17 @@
                             <img :src="viewImage(user?.avatar)" alt="User" class="w-full h-full object-cover">
                         </button>
                         <!-- Dropdown Menu -->
-                        <div id="user-dropdown" class="absolute right-0 top-12 w-72 bg-white rounded-xl shadow-xl border border-border z-50 overflow-hidden hidden">
+                        <div id="user-dropdown" class="absolute right-0 top-12 w-auto bg-white rounded-xl shadow-xl border border-border z-50 overflow-hidden hidden">
                             <!-- Header -->
                             <div class="p-4 border-b border-border">
                                 <div class="flex items-center gap-3">
                                     <div class="w-12 h-12 rounded-full overflow-hidden ring-2 ring-border">
-                                        <img src="/assets/images/user1.jpg" alt="Cody Fisher" class="w-full h-full object-cover">
+                                        <img :src="viewImage(user?.avatar)" alt="Cody Fisher" class="w-full h-full object-cover">
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center gap-2">
                                             <h3 class="font-semibold truncate">{{ user?.fullname }}</h3>
-                                            <span class="text-xs bg-gray-200 px-2 py-0.5 rounded font-medium">{{ user?.role?.name }}</span>
+                                            <span class="text-xs bg-gray-200 px-2 py-0.5 rounded font-medium">{{ user?.is_admin == 1 ? 'ADMIN' : user?.role?.name }}</span>
                                         </div>
                                         <p class="text-sm text-gray-500 truncate">{{ user?.email }}</p>
                                     </div>
@@ -111,7 +111,7 @@
         <!-- Sidebar Container -->
         <aside class="fixed top-16 left-0 w-[260px] h-[calc(100vh-4rem)] bg-white border-r overflow-y-auto z-40">
             <nav>
-                <div v-for="menu in menus" :key="menu.name">
+                <div v-for="menu in sidebarMenus" :key="menu.name">
                     <!-- MENU KHÔNG CÓ CHILD -->
                     <NuxtLink v-if="!menu.children" :to="menu.to" class="flex items-center px-6 h-11 transition hover:bg-gray-100 text-gray-700" :class="{ 'bg-gray-100 text-indigo-700': isActive(menu.to) }">
                         <i :class="menu.icon" class="text-md"></i>
@@ -152,16 +152,19 @@
             name: 'Ngày của tôi',
             icon: 'ti ti-layout-dashboard',
             to: '/',
+            permission: 'todo.index'
         },
         {
             name: 'Công việc',
             icon: 'ti ti-list-check',
             to: '/task',
+            permission: 'task.index'
         },
         {
             name: 'Lịch của tôi',
             icon: 'ti ti-calendar',
             to: '/calendar',
+            permission: 'event.index'
         },
         {
             name: 'Khách hàng',
@@ -169,15 +172,18 @@
             children: [
                 {
                     name: 'Lead',
-                    to: '/customer/lead'
+                    to: '/customer/lead',
+                    permission: 'customer.index'
                 },
                 {
                     name: 'Contact',
-                    to: '/customer/contact'
+                    to: '/customer/contact',
+                    permission: 'customer.index'
                 },
                 {
                     name: 'Thêm mới',
-                    to: '/customer/create'
+                    to: '/customer/create',
+                    permission: 'customer.store'
                 }
             ]
         },
@@ -187,11 +193,13 @@
             children: [
                 {
                     name: 'Chiến dịch',
-                    to: '/marketing/campaign'
+                    to: '/marketing/campaign',
+                    permission: 'campaign.index'
                 },
                 {
                     name: 'Nhóm khách hàng',
-                    to: '/marketing/customers'
+                    to: '/marketing/customers',
+                    permission: 'customer-group.index'
                 }
             ]
         },
@@ -201,11 +209,13 @@
             children: [
                 {
                     name: 'Báo giá',
-                    to: '/contract/quotation'
+                    to: '/contract/quotation',
+                    permission: 'quotation.index'
                 },
                 {
                     name: 'Hóa đơn',
-                    to: '/contract/invoice'
+                    to: '/contract/invoice',
+                    permission: 'invoice.index'
                 }
             ]
         },
@@ -215,16 +225,24 @@
             children: [
                 {
                     name: 'Sản phẩm',
-                    to: '/system/product'
-                },
-                {
-                    name: 'Thành viên',
-                    to: '/system/user'
+                    to: '/system/product',
+                    permission: 'product.index'
                 },
                 {
                     name: 'Triển lãm',
-                    to: '/system/exhibition'
-                }
+                    to: '/system/exhibition',
+                    permission: 'exhibition.index'
+                },
+                {
+                    name: 'Thành viên',
+                    to: '/system/user',
+                    permission: 'user.index'
+                },
+                {
+                    name: 'Phân quyền',
+                    to: '/system/role',
+                    permission: 'role.index'
+                },
             ]
         },
         {
@@ -302,5 +320,56 @@
                 }
             }
         })
+    })
+
+    const { can } = usePermission()
+    const sidebarMenus = computed(() => {
+
+        return menus
+            .map(menu => {
+
+                /*
+                |--------------------------------------------------------------------------
+                | MENU CHILDREN
+                |--------------------------------------------------------------------------
+                */
+
+                if (menu.children) {
+
+                    const children = menu.children.filter(child => {
+
+                        return !child.permission
+                            || can(child.permission)
+                    })
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | HIDE EMPTY GROUP
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (!children.length) {
+                        return null
+                    }
+
+                    return {
+                        ...menu,
+                        children
+                    }
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | SINGLE MENU
+                |--------------------------------------------------------------------------
+                */
+
+                if (menu.permission && !can(menu.permission)) {
+                    return null
+                }
+
+                return menu
+            })
+            .filter(Boolean)
     })
 </script>

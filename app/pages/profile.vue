@@ -51,7 +51,7 @@
 	    	</div>
 
 	    	<div class="bg-white px-5 py-4 rounded mb-5">
-	    		<h4 class="font-semibold text-lg pb-3 mb-3">Đổi ảnh đại diện</h4>
+	    		<h4 class="font-semibold text-lg pb-3 mb-3">Ảnh đại diện</h4>
 	    		<div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div class="flex items-center justify-between gap-3">
 		                <div class="relative">
@@ -122,7 +122,8 @@
 	    formData.append('email', form.email)
 	    formData.append('phone', form.phone || '')
 	    formData.append('birthday', form.birthday || '')
-
+	    formData.append('avatar_current', form.avatar || '')
+	    
 	    if (form.password) {
 	        formData.append('password', form.password)
 	        formData.append('password_confirmation', form.password_confirmation)

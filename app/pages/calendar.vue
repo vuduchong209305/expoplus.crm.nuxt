@@ -41,19 +41,26 @@
 	            }
 	        })
 
-	        const mapped = res.data.map(e => ({
-	            id: e.id,
-	            title: e.title,
-	            start: e.start_time,
-	            end: e.end_time || e.start_time,
-	            color: getColor(e.type),
-	            extendedProps: {
-    				type: e.type
-  				}
-	        }))
+	        if(res.status) {
+	        	const mapped = res.data.map(e => ({
+		            id: e.id,
+		            title: e.title,
+		            start: e.start_time,
+		            end: e.end_time || e.start_time,
+		            color: getColor(e.type),
+		            extendedProps: {
+	    				type: e.type
+	  				}
+		        }))
 
-	        successCallback(mapped)
-
+		        successCallback(mapped)
+	        } else {
+	        	notify.error({
+	                title: 'Thông báo',
+	                description: res.message
+	            })
+	        }
+	    
 	    } catch (err) {
 	        failureCallback(err)
 	    }

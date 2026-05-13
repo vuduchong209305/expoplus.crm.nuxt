@@ -30,7 +30,7 @@
                 </div>
                 
                 <div>
-                    <button class="border border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white text-sm rounded-lg py-1 px-3 transition-all" @click="assigned">Giao cho <i class="ti ti-arrow-bar-right"></i></button>
+                    <button class="border border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white text-sm rounded-lg py-1 px-3 transition-all" @click="assigned"><i class="ti ti-user-share me-1"></i>Giao cho</button>
                 </div>
             </div>
             
@@ -122,7 +122,7 @@
     <Offcanvas :open="openCanvas" @close="openCanvas = false" :title="canvasTitle">
         <CustomerDetail v-if="canvasType === 'customer'" :customer="selectedCustomer" />
         <FilterBuilder v-else-if="canvasType === 'filter'" />
-        <AssignedTo v-else-if="canvasType === 'assigned'" :customers="checkbox" @saved="handleSave" />
+        <AssignedTo v-else-if="canvasType === 'assigned'" :customers="checkbox" @saved="handleSave" @close="closeCanvas" />
     </Offcanvas>
 
 </template>
@@ -321,6 +321,10 @@
         }
     }
 
+    const closeCanvas = () => {
+        openCanvas.value = false
+    }
+
     const canvasTitle = computed(() => {
         switch (canvasType.value) {
             case 'customer':
@@ -328,7 +332,7 @@
             case 'filter':
                 return 'Bộ lọc'
             case 'assigned':
-                return 'Giao cho'
+                return 'Giao cho người phụ trách'
             default:
                 return '#'
         }

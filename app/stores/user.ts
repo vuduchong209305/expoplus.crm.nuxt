@@ -1,15 +1,17 @@
 export const useUserStore = defineStore('user', {
     state: () => ({
-        user: null
+        user: null,
+        permissions: []
     }),
     actions: {
         async fetch() {
             try {
-                const response = await useNuxtApp().$apiFetch('me');
-                if(response?.message == "Vui lòng đăng nhập lại")
+                const res = await useNuxtApp().$apiFetch('me');
+                if(res?.message == "Vui lòng đăng nhập lại")
                     useLoginStore().logout();
 
-                this.user = response?.data;
+                this.user = res?.data;
+                this.permissions = res.data.permissions || []
             } catch (error) {
                 useLoginStore().logout();
                 this.user = null;

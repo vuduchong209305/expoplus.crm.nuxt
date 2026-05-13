@@ -2,10 +2,10 @@
 	<div class="bg-white border-b px-4 sm:px-6 py-4 sm:py-3">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-                <h1 class="text-lg sm:text-xl font-semibold">Thành viên</h1>
-                <p class="text-sm text-gray-500 mt-0.5">Các thành viên trong ban tổ chức của bạn</p>
+                <h1 class="text-lg sm:text-xl font-semibold">Phân quyền</h1>
+                <p class="text-sm text-gray-500 mt-0.5">Tạo các nhóm quyền</p>
             </div>
-            <NuxtLink to="/system/user/create" class="px-4 py-2 text-sm font-medium bg-white text-black border border-gray-500 rounded-lg hover:bg-black hover:text-white hover:border-white active:scale-95 transition-all"><i class="ti ti-plus me-2"></i>Thêm thành viên</NuxtLink>
+            <NuxtLink to="/system/role/create" class="px-4 py-2 text-sm font-medium bg-white text-black border border-gray-500 rounded-lg hover:bg-black hover:text-white hover:border-white active:scale-95 transition-all"><i class="ti ti-plus me-2"></i>Thêm nhóm quyền</NuxtLink>
         </div>
     </div>
 
@@ -15,7 +15,7 @@
         	<div class="flex flex-wrap items-center gap-2">
                 
                 <form @submit.prevent="submitSearch" class="relative w-80">
-                    <input v-model="search" placeholder="Tìm thành viên..." class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
+                    <input v-model="search" placeholder="Tìm phân quyền..." class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
                     <!-- BUTTON INSIDE -->
                     <button type="submit" class="absolute right-1 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-indigo-600">
                         <i class="ti ti-search text-lg"></i>
@@ -34,17 +34,15 @@
                             <input type="checkbox" class="w-4 h-4 rounded">
                         </th>
                         <th class="p-3 text-sm text-center font-medium" width="5%">#</th>
-                        <th class="p-3 text-sm text-left font-medium" width="5%">Avatar</th>
-                        <th class="p-3 text-sm text-left font-medium" width="20%">Họ tên</th>
-                        <th class="p-3 text-sm text-left font-medium" width="20%">Email</th>
-                        <th class="p-3 text-sm text-left font-medium" width="10%">Số điện thoại</th>
-                        <th class="p-3 text-sm text-left font-medium" width="10%">Phân quyền</th>
+                        <th class="p-3 text-sm text-left font-medium" width="30%">Tên</th>
+                        <th class="p-3 text-sm text-left font-medium" width="15%">Số thành viên</th>
+                        <th class="p-3 text-sm text-left font-medium" width="15%">Số lượng quyền</th>
                         <th class="p-3 text-sm text-left font-medium" width="15%">Ngày tạo</th>
                         <th class="p-3 text-sm text-left font-medium" width="15%">Cập nhật</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(item, index) in users" :key="index" class="border-b hover:bg-gray-100 transition-all">
+                    <tr v-for="(item, index) in roles" :key="index" class="border-b hover:bg-gray-100 transition-all">
                         <td class="p-3">
                             <input type="checkbox" class="w-4 h-4 rounded">
                         </td>
@@ -59,7 +57,7 @@
                                     <!-- Menu -->
                                     <ul class="dropdown-menu hidden absolute mt-2 w-40 bg-white border rounded shadow-md py-1 z-50">
                                         <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm">
-                                            <NuxtLink :to="`/system/user/${item.id}`" class="block w-full">
+                                            <NuxtLink :to="`/system/role/${item.id}`" class="block w-full">
                                                 <i class="ti ti-edit"></i>&nbsp;&nbsp;Sửa
                                             </NuxtLink>
                                         </li>
@@ -70,23 +68,15 @@
                         </td>
 
                         <td class="p-3">
-                            <img :src="viewImage(item?.avatar)" :alt="item?.fullname" class="rounded-lg">
+                            <NuxtLink :to="`/system/role/${item?.id}`" class="text-sm text-blue-500 hover:font-semibold transition-all truncate">{{ item?.name }}</NuxtLink>
                         </td>
 
                         <td class="p-3">
-                            <NuxtLink :to="`/system/user/${item?.id}`" class="text-sm text-blue-500 hover:font-semibold transition-all truncate">{{ item?.fullname }}</NuxtLink>
+                            <span class="text-gray-500 text-sm">{{ item?.user_count }}</span>
                         </td>
 
                         <td class="p-3">
-                        	<span class="text-gray-500 text-sm">{{ item?.email }}</span>
-                        </td>
-
-                        <td class="p-3">
-                        	<span class="text-gray-500 text-sm">{{ item?.phone }}</span>
-                        </td>
-
-                        <td class="p-3">
-                        	<span class="text-gray-500 text-sm">{{ item?.is_admin == 1 ? 'ADMIN' : item?.role?.name }}</span>
+                        	<span class="text-gray-500 text-sm">{{ item?.permissions_count }}</span>
                         </td>
 
                         <td class="p-3">
@@ -114,7 +104,7 @@
         middleware: ['auth'],
     })
 
-    const users = ref([])
+    const roles = ref([])
     const search = ref('')
 
     onMounted(() => {
@@ -122,14 +112,14 @@
     })
 
     async function fetch() {
-        const res = await useNuxtApp().$apiFetch(`user`, {
+        const res = await useNuxtApp().$apiFetch(`role`, {
             params: {
                 search: search.value,
             }
         });
 
         if (res.status) {
-            users.value = res.data
+            roles.value = res.data
         } else {
             notify.error({
                 title: 'Thông báo',

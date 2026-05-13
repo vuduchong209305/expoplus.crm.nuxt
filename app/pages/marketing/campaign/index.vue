@@ -12,7 +12,7 @@
     <div class="p-4 lg:p-6">
 
         <div class="bg-white p-4 rounded-lg mb-3 border">
-        	<div class="flex flex-wrap items-center gap-2">
+        	<div class="flex flex-wrap items-center justify-between gap-2">
                 
                 <form @submit.prevent="submitSearch" class="relative w-80">
                     <input v-model="search" placeholder="Tìm tên, email, số điện thoại..." class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
@@ -22,6 +22,10 @@
                     </button>
                 </form>
                 
+                <div>
+                    <button class="border border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white text-sm rounded-lg py-1 px-3 transition-all" @click="assigned"><i class="ti ti-user-share me-1"></i> Giao cho </button>
+                </div>
+
             </div>
         </div>
 
@@ -31,7 +35,7 @@
                 <thead class="border-b">
                     <tr>
                         <th class="p-3 text-left w-12" width="5%">
-                            <input type="checkbox" class="w-4 h-4 rounded">
+                            <input type="checkbox" class="w-4 h-4 rounded" :checked="isAllSelected" @change="toggleAll">
                         </th>
                         <th class="p-3 text-sm text-center font-medium" width="5%">#</th>
                         <th class="p-3 text-sm text-left font-medium" width="30%">Tên chiến dịch</th>
@@ -47,7 +51,7 @@
                     <tr v-for="(item, index) in campaigns" :key="index" class="border-b hover:bg-gray-100 transition-all">
 
                         <td class="p-3">
-                            <input type="checkbox" class="w-4 h-4 rounded">
+                            <input type="checkbox" class="w-4 h-4 rounded" :checked="isChecked(item)" @change="toggleItem(item)">
                         </td>
 
                         <td class="p-3">
@@ -115,6 +119,10 @@
 
     </div>
 
+    <Offcanvas :open="openCanvas" @close="openCanvas = false" :title="`Giao cho người phụ trách`">
+        <AssignedTo :campaigns="checkbox" @saved="handleSave" @close="closeCanvas" />
+    </Offcanvas>
+
 </template>
 
 <script setup lang="ts">
@@ -135,6 +143,14 @@
     const route = useRoute()
     const campaigns = ref([])
     const search = ref('')
+
+    const {
+        selected: checkbox,
+        toggleItem,
+        toggleAll,
+        isAllSelected,
+        isChecked
+    } = useCheckboxTable(campaigns)
 
     watch(() => route.query.page, async (page) => {
         await fetch(Number(page) || 1)

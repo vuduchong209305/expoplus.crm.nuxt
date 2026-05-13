@@ -119,6 +119,7 @@
         formData.append('location', location.value)
         formData.append('start_date', start_date.value)
         formData.append('end_date', end_date.value)
+        formData.append('avatar_current', logo.value || '')
 
         if (file.value) {
             formData.append('logo', file.value)

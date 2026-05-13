@@ -70,7 +70,7 @@
                         </td>
 
                         <td class="p-3">
-                            <span class="text-gray-500 text-sm">{{ item?.code }}</span>
+                            <NuxtLink :to="`/contract/quotation/${item.id}`" class="text-gray-500 text-sm text-indigo-500 hover:font-semibold transition-all">{{ item?.code }}</NuxtLink>
                         </td>
 
                         <td class="p-3">

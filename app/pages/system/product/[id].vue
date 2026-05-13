@@ -115,7 +115,8 @@
         formData.append('note', note.value)
         formData.append('unit', unit.value)
         formData.append('price', price.value)
-
+        formData.append('avatar_current', avatar.value || '')
+        
         if (file.value) {
             formData.append('avatar', file.value)
         }
