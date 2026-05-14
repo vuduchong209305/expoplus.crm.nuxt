@@ -327,7 +327,7 @@
 	    </div>
 	</div>
 
-	<Offcanvas :open="open" @close="open = false">
+	<Offcanvas :open="open" @close="open = false" :title="`Thêm vào nhóm`">
         <Group :customer_id="customer.id"/>
     </Offcanvas>
 </template>
