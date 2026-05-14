@@ -30,12 +30,9 @@
             <table class="w-full">
                 <thead class="border-b">
                     <tr>
-                        <th class="p-3 text-left w-12" width="5%">
-                            <input type="checkbox" class="w-4 h-4 rounded">
-                        </th>
                         <th class="p-3 text-sm text-center font-medium" width="5%">#</th>
                         <th class="p-3 text-sm text-left font-medium" width="5%">Avatar</th>
-                        <th class="p-3 text-sm text-left font-medium" width="15%">Họ tên</th>
+                        <th class="p-3 text-sm text-left font-medium" width="20%">Họ tên</th>
                         <th class="p-3 text-sm text-left font-medium" width="20%">Email</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Số điện thoại</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Phân quyền</th>
@@ -46,9 +43,6 @@
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in users" :key="index" class="border-b hover:bg-gray-100 transition-all">
-                        <td class="p-3">
-                            <input type="checkbox" class="w-4 h-4 rounded">
-                        </td>
 
                         <td class="p-3">
                             <div class="flex items-center justify-center gap-2">

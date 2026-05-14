@@ -30,11 +30,8 @@
             <table class="w-full">
                 <thead class="border-b">
                     <tr>
-                        <th class="p-3 text-left w-12" width="5%">
-                            <input type="checkbox" class="w-4 h-4 rounded">
-                        </th>
                         <th class="p-3 text-sm text-center font-medium" width="5%">#</th>
-                        <th class="p-3 text-sm text-left font-medium" width="30%">Tên</th>
+                        <th class="p-3 text-sm text-left font-medium" width="35%">Tên nhóm</th>
                         <th class="p-3 text-sm text-left font-medium" width="15%">Số thành viên</th>
                         <th class="p-3 text-sm text-left font-medium" width="15%">Số lượng quyền</th>
                         <th class="p-3 text-sm text-left font-medium" width="15%">Ngày tạo</th>
@@ -43,9 +40,6 @@
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in roles" :key="index" class="border-b hover:bg-gray-100 transition-all">
-                        <td class="p-3">
-                            <input type="checkbox" class="w-4 h-4 rounded">
-                        </td>
 
                         <td class="p-3">
                             <div class="flex items-center justify-center gap-2">
