@@ -35,12 +35,13 @@
                         </th>
                         <th class="p-3 text-sm text-center font-medium" width="5%">#</th>
                         <th class="p-3 text-sm text-left font-medium" width="5%">Avatar</th>
-                        <th class="p-3 text-sm text-left font-medium" width="20%">Họ tên</th>
+                        <th class="p-3 text-sm text-left font-medium" width="15%">Họ tên</th>
                         <th class="p-3 text-sm text-left font-medium" width="20%">Email</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Số điện thoại</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Phân quyền</th>
-                        <th class="p-3 text-sm text-left font-medium" width="15%">Ngày tạo</th>
-                        <th class="p-3 text-sm text-left font-medium" width="15%">Cập nhật</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Trạng thái</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Ngày tạo</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Cập nhật</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -87,6 +88,10 @@
 
                         <td class="p-3">
                         	<span class="text-gray-500 text-sm">{{ item?.is_admin == 1 ? 'ADMIN' : item?.role?.name }}</span>
+                        </td>
+
+                        <td class="p-3">
+                            <span :class="['text-xs py-1 px-2 rounded-full border', item?.status == 1 ? 'border-green-300 text-green-500 bg-green-100' : 'border-red-300 text-red-500 bg-red-100']">{{ item?.status == 1 ? 'Đã kích hoạt' : 'Đã khóa' }}</span>
                         </td>
 
                         <td class="p-3">

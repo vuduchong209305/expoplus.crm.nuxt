@@ -46,11 +46,10 @@
                         <label class="block text-sm text-gray-700 font-semibold mb-2">Nhập lại mật khẩu</label>
                         <input v-model="form.password_confirmation" type="password" placeholder="******" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-indigo-500 transition-colors">
                     </div>
-                    
                 </div>
 	    	</div>
 
-	    	<div class="bg-white px-5 py-4 rounded mb-5" v-if="form?.is_admin != 1">
+	    	<div class="bg-white px-5 py-4 rounded mb-5">
 	    		<h4 class="font-semibold text-lg pb-3 mb-3">Phân quyền</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 	<div>
@@ -59,6 +58,16 @@
 	                   		<option v-for="(item, index) in roles" :value="item?.id" :key="item?.id">{{ item?.name }}</option>
 	                   	</select>
                 	</div>
+
+                	<div>
+                		<label class="relative inline-flex cursor-pointer items-center gap-3 text-gray-900">
+					        <input v-model="form.status" type="checkbox" class="peer sr-only" :true-value="1" :false-value="0" />
+					        <div class="peer h-7 w-12 rounded-full bg-slate-300 ring-offset-1 transition-colors duration-200 peer-checked:bg-green-600"></div>
+					        <span class="dot absolute top-1 left-1 h-5 w-5 rounded-full bg-white transition-transform duration-200 ease-in-out peer-checked:translate-x-5"></span>
+					        {{ form.status ? 'Đã kích hoạt' : 'Đã khóa' }}
+					    </label>
+                	</div>
+                	
                 </div>
 	    	</div>
 
@@ -98,6 +107,8 @@
     const isEdit = computed(() => id && id !== 'create')
     const roles = ref([])
 
+    const { user } = useUserStore()
+
     const form = reactive({
 	    fullname: '',
 	    email: '',
@@ -107,8 +118,11 @@
 	    password_confirmation: '',
 	    avatar: '',
 	    role_id: '',
-	    is_admin: ''
+	    is_admin: '',
+	    status: 1
 	})
+
+    const errors = ref({})
 
     const fileInput = ref<HTMLInputElement | null>(null)
 
@@ -147,7 +161,7 @@
     }
 
     const fetchRole = async() => {
-        const res = await useNuxtApp().$apiFetch(`role`)
+        const res = await useNuxtApp().$apiFetch(`user/roles`)
         if (res.status) {
             roles.value = res.data
         }
@@ -157,43 +171,85 @@
     async function submit() {
 		if (!validate()) return
 
-		const formData = new FormData()
+		errors.value = {}
 
-		formData.append('id', isEdit.value ? String(id) : '')
-	    formData.append('fullname', form.fullname)
-	    formData.append('email', form.email)
-	    formData.append('phone', form.phone || '')
-	    formData.append('birthday', form.birthday || '')
-	    formData.append('role_id', form.role_id || '')
-	    formData.append('avatar_current', form.avatar || '')
+    	try {
 
-	    if (form.password) {
-	        formData.append('password', form.password)
-	        formData.append('password_confirmation', form.password_confirmation)
-	    }
+			const formData = new FormData()
 
-	    if (file.value) {
-	        formData.append('avatar', file.value)
-	    }
+			formData.append('id', isEdit.value ? String(id) : '')
+		    formData.append('fullname', form.fullname)
+		    formData.append('email', form.email)
+		    formData.append('phone', form.phone || '')
+		    formData.append('birthday', form.birthday || '')
+		    formData.append('role_id', form.role_id || '')
+		    formData.append('status', form.status)
+		    formData.append('avatar_current', form.avatar || '')
 
-		const res = await useNuxtApp().$apiFetch('user/save', {
-	        method: 'POST',
-	        body: formData
-	    })
+		    if (form.password) {
+		        formData.append('password', form.password)
+		        formData.append('password_confirmation', form.password_confirmation)
+		    }
 
-	    if (res.status) {
+		    if (file.value) {
+		        formData.append('avatar', file.value)
+		    }
 
-	        notify.success({
-	            title: 'Thông báo',
-	            description: res.message
-	        })
-	        navigateTo(`/system/user`)
-	    } else {
+			const res = await useNuxtApp().$apiFetch('user/save', {
+		        method: 'POST',
+		        body: formData
+		    })
+
+		    if (res.status) {
+
+		        notify.success({
+		            title: 'Thông báo',
+		            description: res.message
+		        })
+		        navigateTo(`/system/user`)
+		    } else {
+		        notify.error({
+		            title: 'Lỗi',
+		            description: res.message
+		        })
+		    }
+		} catch (error: any) {
+
+	        /*
+	        |--------------------------------------------------------------------------
+	        | VALIDATION
+	        |--------------------------------------------------------------------------
+	        */
+
+	        if (error?.status === 422) {
+
+	            errors.value = error.data.errors
+
+	            Object.values(error.data.errors)
+			        .flat()
+			        .forEach((message: any) => {
+
+			            notify.error({
+			                title: 'Có lỗi xảy ra',
+			                description: message
+			            })
+			        })
+
+	            return
+	        }
+
+	        /*
+	        |--------------------------------------------------------------------------
+	        | OTHER ERROR
+	        |--------------------------------------------------------------------------
+	        */
+
 	        notify.error({
 	            title: 'Lỗi',
-	            description: res.message
+	            description: error?.data?.message || 'Có lỗi xảy ra'
 	        })
 	    }
+
 	}
 
     function validate() {
@@ -210,8 +266,8 @@
 	    return true
 	}
 
-    onMounted(async () => {
-        await fetch()
-        await fetchRole()
+    onMounted(() => {
+        fetch()
+        fetchRole()
     })
 </script>

@@ -141,7 +141,7 @@
             cancelButtonText: "Đóng"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const res = await useNuxtApp().$apiFetch(`quotation/delete`, {
+                const res = await useNuxtApp().$apiFetch(`role/delete`, {
                     method: 'POST',
                     body: {
                         id

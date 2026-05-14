@@ -134,7 +134,7 @@
 	        formData.append('avatar', avatar.value)
 	    }
 
-		const res = await useNuxtApp().$apiFetch('user/update', {
+		const res = await useNuxtApp().$apiFetch('user/updateProfile', {
 	        method: 'POST',
 	        body: formData
 	    })

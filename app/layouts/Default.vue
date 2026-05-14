@@ -220,6 +220,24 @@
             ]
         },
         {
+            name: 'Báo cáo',
+            icon: 'ti ti-brand-google-analytics',
+            children: [
+                {
+                    name: 'Báo cáo doanh thu',
+                    to: '/report/revenue'
+                },
+                {
+                    name: 'Báo cáo khách hàng',
+                    to: '/report/customer'
+                },
+                {
+                    name: 'Báo cáo công việc',
+                    to: '/report/task'
+                }
+            ]
+        },
+        {
             name: 'Hệ thống',
             icon: 'ti ti-settings',
             children: [
@@ -245,24 +263,7 @@
                 },
             ]
         },
-        {
-            name: 'Báo cáo',
-            icon: 'ti ti-brand-google-analytics',
-            children: [
-                {
-                    name: 'Báo cáo doanh thu',
-                    to: '/report/revenue'
-                },
-                {
-                    name: 'Báo cáo khách hàng',
-                    to: '/report/customer'
-                },
-                {
-                    name: 'Báo cáo công việc',
-                    to: '/report/task'
-                }
-            ]
-        },
+        
     ]
 
     onMounted(() => {

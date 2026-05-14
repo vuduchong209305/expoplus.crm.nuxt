@@ -165,6 +165,11 @@
 
         if (res.status) {
             report.value = res.data
+        } else {
+            notify.error({
+                title: 'Thông báo',
+                description: res.message
+            })
         }
     }
 

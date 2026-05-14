@@ -55,7 +55,7 @@
                             <button type="button" @click="toggleGroup(items)" class="text-xs text-indigo-600 hover:underline"> Chọn nhóm </button>
                         </div>
                         <!-- PERMISSION LIST -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 p-4">
+                        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 p-4">
                             <label v-for="item in items" :key="item.id" class="flex items-start gap-3 border rounded px-3 py-3 cursor-pointer hover:border-indigo-300 transition">
                                 <input type="checkbox" :value="item.id" v-model="form.permissions" class="mt-1 w-4 h-4 accent-indigo-500">
                                 <div class="flex-1 min-w-0">
@@ -246,7 +246,7 @@
 	    }
 	}
 
-	onMounted(async () => {
-	    await fetch()
+	onMounted(() => {
+	    fetch()
 	})
 </script>

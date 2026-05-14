@@ -140,6 +140,7 @@
         total: 0
     })
 
+    const openCanvas = ref(false)
     const route = useRoute()
     const campaigns = ref([])
     const search = ref('')
@@ -220,6 +221,54 @@
                 }
             }
         });
+    }
+
+    const assigned = () => {
+        if(checkbox.value.length == 0) {
+            notify.error({
+                title: 'Thông báo',
+                description: 'Vui lòng chọn dữ liệu'
+            })
+            return
+        }
+
+        openCanvas.value = true
+    }
+
+    const handleSave = async(user) => {
+        if(checkbox.value.length == 0) {
+            notify.error({
+                title: 'Thông báo',
+                description: 'Vui lòng chọn dữ liệu'
+            })
+            return
+        }
+
+        const res = await useNuxtApp().$apiFetch(`campaign/assignedTo`, {
+            method: 'POST',
+            body: {
+                user_id: user.id,
+                campaigns: checkbox.value.map(i => i.id)
+            }
+        })
+
+        if (res.status) {
+            notify.success({
+                title: 'Thông báo',
+                description: res.message
+            })
+            openCanvas.value = false
+            fetch(route.query.page)
+        } else {
+            notify.error({
+                title: 'Thông báo',
+                description: res.message
+            })
+        }
+    }
+
+    const closeCanvas = () => {
+        openCanvas.value = false
     }
 
     useHead(() => ({

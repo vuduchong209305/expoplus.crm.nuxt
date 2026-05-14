@@ -186,7 +186,7 @@
         if(checkbox.value.length == 0) {
             notify.error({
                 title: 'Thông báo',
-                description: 'Vui lòng chọn khách hàng'
+                description: 'Vui lòng chọn dữ liệu'
             })
             return
         }
