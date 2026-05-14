@@ -168,7 +168,7 @@
         },
         {
             name: 'Khách hàng',
-            icon: 'ti ti-mail',
+            icon: 'ti ti-users',
             children: [
                 {
                     name: 'Lead',
