@@ -14,49 +14,71 @@
     	<div class="bg-white p-4 rounded-lg mb-3 border">
         	<div class="flex flex-wrap justify-between gap-2">
                 
-                <div>
-                	<div class="mb-2">
-                		<label class="block text-sm text-gray-700 font-semibold mb-1">Chọn sản phẩm</label>
-	                	<select v-model="selectedProductId" class="text-sm border px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500">
-					        <option value="">-- Chọn sản phẩm --</option>
-					        <option v-for="p in products" :key="p.id" :value="p.id">
-					            {{ p.title }} - {{ formatMoney(p.price) }}
-					        </option>
-					    </select>
-		                &nbsp;
-		                <button type="button" @click="addProduct" class="px-4 py-2 bg-indigo-500 text-white rounded-md text-sm">
-					        Thêm
-					    </button>
-                	</div>
-                	
-                	<div class="mb-2">
-                		<label class="block text-sm text-gray-700 font-semibold mb-1">Chọn sự kiện</label>
-                		<select v-model="selectedExhibition" class="w-full text-sm border px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500">
-	                		<option value="">-- Chọn sự kiện --</option>
-					        <option v-for="e in exhibitions" :key="e.id" :value="e.id">
-					            {{ e.title }}
-					        </option>
-	                	</select>
-                	</div>
-
-                	<div>
-                		<label class="block text-sm text-gray-700 font-semibold mb-1">Chọn khách hàng</label>
-                		<select ref="customerSelect"></select>
-                	</div>
-			        
-                </div>
+                <div class="bg-gray-50 border border-slate-200 rounded-lg p-5 shadow-sm">
+				    <!-- HEADER -->
+				    <div class="flex items-center justify-between mb-3">
+				        <div>
+				            <h3 class="text-base font-semibold text-gray-900"> Thông tin báo giá </h3>
+				            <p class="text-sm text-gray-500 mt-1"> Chọn khách hàng, sự kiện và sản phẩm </p>
+				        </div>
+				        <div class="h-10 w-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+				            <i class="ti ti-file-invoice text-indigo-600 text-xl"></i>
+				        </div>
+				    </div>
+				    <div class="space-y-4">
+				        <!-- CUSTOMER -->
+				        <div>
+				            <label class="block text-sm font-semibold text-gray-700 mb-2"> Khách hàng </label>
+				            <select ref="customerSelect" class="w-full"></select>
+				        </div>
+				        <!-- EXHIBITION -->
+				        <div>
+				            <label class="block text-sm font-semibold text-gray-700 mb-2"> Sự kiện </label>
+				            <select v-model="selectedExhibition" class="w-full text-sm border border-slate-300 bg-white px-2 py-1 rounded-lg focus:outline-none focus:border-indigo-500">
+				                <option value=""> -- Chọn sự kiện -- </option>
+				                <option v-for="e in exhibitions" :key="e.id" :value="e.id">
+				                    {{ e.title }}
+				                </option>
+				            </select>
+				        </div>
+				        <!-- PRODUCT -->
+				        <div>
+				            <label class="block text-sm font-semibold text-gray-700 mb-2"> Thêm sản phẩm </label>
+				            <div class="flex gap-3">
+				                <select v-model="selectedProductId" class="flex-1 text-sm border border-slate-300 bg-white px-2 py-1 rounded-lg focus:outline-none focus:border-indigo-500">
+				                    <option value=""> -- Chọn sản phẩm -- </option>
+				                    <option v-for="p in products" :key="p.id" :value="p.id">
+				                        {{ p.title }} - {{ formatMoney(p.price) }}
+				                    </option>
+				                </select>
+				                <button type="button" @click="addProduct" class="px-5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition whitespace-nowrap">
+				                    <i class="ti ti-plus mr-1"></i> Thêm </button>
+				            </div>
+				        </div>
+				    </div>
+				</div>
                 
                 <div class="flex flex-col gap-3 text-sm">
 
-				    <!-- MÃ BÁO GIÁ -->
-					<div v-if="quotation?.code" class="inline-flex items-center gap-2">
-					    <span class="text-gray-500">Mã báo giá</span>
-					    <span class="px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-semibold text-xs border border-green-200">
-					        {{ quotation?.code }}
-					    </span>
+                	<div class="bg-gray-50 rounded-lg px-4 py-3 border border-gray-200">
+					    <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-[13px]">
+					        <div>
+					            <span class="text-gray-400">Mã báo giá</span>
+					            <p class="font-medium text-gray-700">
+					                {{ quotation?.code ?? 'N/A' }}
+					            </p>
+					        </div>
+					        <div>
+					            <span class="text-gray-400">Phụ trách</span>
+					            <p class="font-medium text-gray-700">
+					                {{ quotation?.assigned?.fullname || 'N/A' }}
+					            </p>
+					        </div>
+					    </div>
 					</div>
+
 					<!-- KHÁCH HÀNG -->
-					<div v-if="customer" class="bg-gray-50 rounded-xl px-4 py-3 border border-gray-200">
+					<div v-if="customer" class="bg-gray-50 rounded-lg px-4 py-3 border border-gray-200">
 					    <div class="flex items-center justify-between mb-2">
 					        <h3 class="font-semibold text-gray-800"> Thông tin khách hàng </h3>
 					    </div>

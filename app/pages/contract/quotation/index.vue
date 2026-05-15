@@ -38,8 +38,8 @@
                         <th class="p-3 text-sm text-left font-medium" width="10%">Họ tên</th>
                         <th class="p-3 text-sm text-left font-medium" width="40%">Doanh nghiệp</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Thành tiền</th>
-                        <th class="p-3 text-sm text-left font-medium" width="10%">Ngày tạo</th>
-                        <th class="p-3 text-sm text-left font-medium" width="10%">Triển lãm</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Phụ trách</th>
+                        <th class="p-3 text-sm text-left font-medium" width="10%">Sự kiện</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -86,7 +86,7 @@
                         </td>
 
                         <td class="p-3">
-                            <span class="text-gray-500 text-xs">{{ item?.created_at }}</span>
+                            <span class="text-gray-500 text-xs">{{ item?.assigned?.fullname }}</span>
                         </td>
 
                         <td class="p-3">

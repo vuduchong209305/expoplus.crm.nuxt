@@ -456,7 +456,7 @@
 
     async function careerList() {
 
-        const res = await useNuxtApp().$apiFetch(`career`)
+        const res = await useNuxtApp().$apiFetch(`customer/career`)
 
         if (res.status) {
         	let data = res.data
@@ -474,7 +474,7 @@
 
     async function stakeholderList() {
 
-        const res = await useNuxtApp().$apiFetch(`stakeholder`)
+        const res = await useNuxtApp().$apiFetch(`customer/stakeholder`)
 
         if (res.status) {
         	let data = res.data

@@ -29,7 +29,7 @@
                     <button @click="resetFilter" class="px-3 py-2 text-sm text-red-500"> Reset </button>
                 </div>
                 
-                <div>
+                <div v-if="can('customer.assigned')">
                     <button class="border border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white text-sm rounded-lg py-1 px-3 transition-all" @click="assigned"><i class="ti ti-user-share me-1"></i>Giao cho</button>
                 </div>
             </div>
@@ -130,6 +130,7 @@
 <script setup lang="ts">
 
 	import Swal from 'sweetalert2'
+    const { can } = usePermission()
 
     definePageMeta({
         middleware: ['auth'],

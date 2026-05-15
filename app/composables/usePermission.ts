@@ -4,9 +4,11 @@ export const usePermission = () => {
 
     const can = (key: string) => {
 
-        if (user?.user?.is_admin == 1) return true
+        if (user?.user?.is_admin == 1) {
+            return true
+        }
 
-        return user.permissions.includes(key)
+        return user?.permissions?.includes(key)
     }
 
     return {
