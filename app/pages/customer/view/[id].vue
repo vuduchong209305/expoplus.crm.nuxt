@@ -217,8 +217,8 @@
 						            <td class="py-3 font-medium text-gray-900"> {{ customer?.owner?.fullname }} </td>
 						        </tr>
 						        <tr>
-						        	<td class="py-3 pr-4 text-gray-500 w-40"> Công ty </td>
-						            <td class="py-3 font-medium text-gray-900"> {{ customer?.company_organizer?.name }} </td>
+						        	<td class="py-3 pr-4 text-gray-500 w-40"> Ban tổ chức </td>
+						            <td class="py-3 font-medium text-gray-900"> {{ customer?.organizer?.name }} </td>
 						        </tr>
 						    </tbody>
 						</table>

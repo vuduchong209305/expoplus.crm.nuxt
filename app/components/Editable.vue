@@ -2,7 +2,7 @@
     <div class="inline-flex items-center gap-1 group">
         <!-- DISPLAY -->
         <template v-if="!editing">
-            <span :class="modelValue ? 'text-gray-900' : 'text-gray-400 italic'">
+            <span :class="hasValue ? 'text-gray-900' : 'text-gray-400 italic'">
                 {{ displayLabel }}
             </span>
             <!-- ICON sát bên -->
@@ -130,6 +130,30 @@
         }
     })
 
+    const hasValue = computed(() => {
+
+        /*
+        |--------------------------------------------------------------------------
+        | MULTIPLE
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            props.multiple &&
+            Array.isArray(props.modelValue)
+        ) {
+            return props.modelValue.length > 0
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | NORMAL
+        |--------------------------------------------------------------------------
+        */
+
+        return !!props.modelValue
+    })
+
     const displayLabel = computed(() => {
 
         /*
@@ -149,12 +173,15 @@
                 return props.placeholder
             }
 
-            return props.options
+            const labels = props.options
                 .filter(o =>
                     props.modelValue.includes(o.value)
                 )
                 .map(o => o.label)
-                .join(', ')
+
+            return labels.length
+                ? labels.join(', ')
+                : props.placeholder
         }
 
         /*
