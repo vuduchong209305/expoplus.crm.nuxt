@@ -79,7 +79,7 @@
 						        </tr>
 						        <tr>
 						        	<td class="py-3 pr-4 text-gray-500 w-40"> Giới tính </td>
-						            <td class="py-3 font-medium text-gray-900"> <Editable v-model="customer.gender" type="select" field="gender" @save="handleSave" :options="[{ label: 'Nam', value: 1 }, { label: 'Nữ', value: 2 }]"/> </td>
+						            <td class="py-3 font-medium text-gray-900"> <Editable v-model="customer.gender" type="select" field="gender" @save="handleSave" :options="[{ label: 'Nam', value: 1 }, { label: 'Nữ', value: 2 }]" class="w-full"/> </td>
 						        </tr>
 						        <tr>
 						            <td class="py-3 pr-4 text-gray-500"> Email </td>
@@ -104,11 +104,11 @@
 						        </tr>
 						        <tr>
 						            <td class="py-3 pr-4 text-gray-500"> Loại dữ liệu </td>
-						            <td class="py-3 font-medium text-gray-900"> <Editable v-model="customer.type_id" type="select" field="type_id" @save="handleSave" :options="[{ label: 'Lead', value: 1 }, { label: 'Contact', value: 2 }]"/> </td>
+						            <td class="py-3 font-medium text-gray-900"> <Editable v-model="customer.type_id" type="select" field="type_id" @save="handleSave" :options="[{ label: 'Lead', value: 1 }, { label: 'Contact', value: 2 }]" class="w-full"/> </td>
 						        </tr>
 						        <tr>
 						        	<td class="py-3 pr-4 text-gray-500"> Giao cho </td>
-						            <td class="py-3 font-medium text-gray-900"> <Editable v-model="customer.assigned_to" type="select" field="assigned_to" @save="handleSave" :options="assignedTo"/> </td>
+						            <td class="py-3 font-medium text-gray-900"> <Editable v-model="customer.assigned_to" type="select" field="assigned_to" @save="handleSave" :options="assignedTo" class="w-full"/> </td>
 						        </tr>
 						    </tbody>
 						</table>
@@ -153,6 +153,29 @@
 	        	</div>
 
 	        	<div class="bg-white px-5 py-4 rounded mb-3">
+	        		<h3 class="font-semibold text-lg pb-3">Lĩnh vực hoạt động</h3>
+		        	<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+	        			<table class="w-full text-sm">
+						    <tbody>
+						        <tr>
+						            <td class="py-3 pr-4 text-gray-500 w-40"> Nhóm đối tượng </td>
+						            <td class="py-3 font-medium text-gray-900"> <Editable v-model="customer.careers" type="select" :multiple="true" field="careers" @save="handleSave" :options="careers" class="w-full"/> </td>
+						        </tr>
+						    </tbody>
+						</table>
+
+						<table class="w-full text-sm">
+						    <tbody>
+						        <tr>
+						            <td class="py-3 pr-4 text-gray-500 w-40"> Lĩnh vực </td>
+						            <td class="py-3 font-medium text-gray-900"> <Editable v-model="customer.stakeholders" type="select" :multiple="true" field="stakeholders" @save="handleSave" :options="stakeholders" class="w-full"/> </td>
+						        </tr>
+						    </tbody>
+						</table>
+	        		</div>
+	        	</div>
+
+	        	<div class="bg-white px-5 py-4 rounded mb-3">
 
 	        		<h3 class="font-semibold text-lg pb-3">Thông tin mô tả</h3>
 
@@ -187,7 +210,7 @@
 						    <tbody>
 						    	<tr>
 						            <td class="py-3 pr-4 text-gray-500 w-40"> Nguồn dữ liệu </td>
-						            <td class="py-3 font-medium text-gray-900"> <Editable v-model="customer.source_id" type="select" field="source_id" @save="handleSave" :options="sources"/> </td>
+						            <td class="py-3 font-medium text-gray-900"> <Editable v-model="customer.source_id" type="select" field="source_id" @save="handleSave" :options="sources" class="w-full"/> </td>
 						        </tr>
 						        <tr>
 						            <td class="py-3 pr-4 text-gray-500 w-40"> Người tạo </td>
@@ -352,6 +375,8 @@
 	const customer = ref({});
 	const assignedTo = ref([]);
 	const sources = ref([]);
+	const careers = ref([]);
+	const stakeholders = ref([]);
 	const open = ref(false)
 
 	const { id } = route.params
@@ -360,6 +385,8 @@
     	view()
     	assignedList()
     	sourceList()
+    	careerList()
+    	stakeholderList()
     });
 
     watch(() => route.query.page, (page) => {
@@ -372,7 +399,17 @@
         const res = await useNuxtApp().$apiFetch(`customer/view?id=${id}`)
 
         if (res.status) {
-            customer.value = res.data
+            customer.value = {
+            	...res.data,
+
+	            careers: res.data.careers.map(
+	                (i: any) => i.id
+	            ),
+
+	            stakeholders: res.data.stakeholders.map(
+	                (i: any) => i.id
+	            )
+	        }
         } else {
             notify.error({
                 title: 'Thông báo',
@@ -407,6 +444,42 @@
         	let data = res.data
             sources.value = data.map(u => ({
 							    	label: u.name,
+							    	value: u.id
+							  	}))
+        } else {
+            notify.error({
+                title: 'Thông báo',
+                description: res.message
+            })
+        }
+    }
+
+    async function careerList() {
+
+        const res = await useNuxtApp().$apiFetch(`career`)
+
+        if (res.status) {
+        	let data = res.data
+            careers.value = data.map(u => ({
+							    	label: u.title,
+							    	value: u.id
+							  	}))
+        } else {
+            notify.error({
+                title: 'Thông báo',
+                description: res.message
+            })
+        }
+    }
+
+    async function stakeholderList() {
+
+        const res = await useNuxtApp().$apiFetch(`stakeholder`)
+
+        if (res.status) {
+        	let data = res.data
+            stakeholders.value = data.map(u => ({
+							    	label: u.title,
 							    	value: u.id
 							  	}))
         } else {

@@ -19,12 +19,13 @@
             <textarea v-if="type === 'textarea'" v-model="value" @keydown.ctrl.enter="save" @keydown.esc.prevent="cancel" class="border w-96 px-2 py-1 rounded text-sm" rows=3></textarea>
 
             <!-- SELECT -->
-            <select v-if="type === 'select'" v-model="value" class="border px-2 py-1 rounded text-sm">
+            <select v-if="type === 'select'" v-model="value" ref="selectRef" :multiple="multiple" class="text-sm w-full">
                 <option value="">-- Chọn --</option>
                 <option v-for="opt in options" :key="opt.value" :value="opt.value">
                     {{ opt.label }}
                 </option>
             </select>
+
             <!-- ACTION BUTTON -->
             <div class="flex items-center gap-1 ml-1">
                 <!-- Save -->
@@ -41,6 +42,9 @@
 </template>
 
 <script setup lang="ts">
+
+    import TomSelect from 'tom-select'
+
     const props = defineProps({
         modelValue: [String, Number],
         field: String,
@@ -55,8 +59,15 @@
         placeholder: {
             type: String,
             default: 'Chưa có'
+        },
+        multiple: {
+            type: Boolean,
+            default: false
         }
     })
+
+    const selectRef = ref()
+    let tomselect: any = null
 
     const emit = defineEmits<{
         (e: 'update:modelValue', value: string | number): void
@@ -87,10 +98,80 @@
         value.value = props.modelValue
     }
 
+    watch(editing, async (v) => {
+
+        if (
+            v &&
+            props.type === 'select'
+        ) {
+
+            await nextTick()
+
+            tomselect = new TomSelect(
+                selectRef.value,
+                {
+                    plugins: props.multiple
+                        ? ['remove_button']
+                        : [],
+
+                    maxItems: props.multiple
+                        ? null
+                        : 1,
+
+                    create: false
+                }
+            )
+        }
+    })
+
+    onBeforeUnmount(() => {
+        if (tomselect) {
+            tomselect.destroy()
+        }
+    })
+
     const displayLabel = computed(() => {
+
+        /*
+        |--------------------------------------------------------------------------
+        | MULTI SELECT
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            props.type === 'select' &&
+            props.multiple
+        ) {
+
+            if (
+                !Array.isArray(props.modelValue)
+            ) {
+                return props.placeholder
+            }
+
+            return props.options
+                .filter(o =>
+                    props.modelValue.includes(o.value)
+                )
+                .map(o => o.label)
+                .join(', ')
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SINGLE SELECT
+        |--------------------------------------------------------------------------
+        */
+
         if (props.type === 'select') {
-            const found = props.options.find(o => o.value == props.modelValue)
-            return found ? found.label : props.placeholder
+
+            const found = props.options.find(
+                o => o.value == props.modelValue
+            )
+
+            return found
+                ? found.label
+                : props.placeholder
         }
 
         return props.modelValue || props.placeholder
