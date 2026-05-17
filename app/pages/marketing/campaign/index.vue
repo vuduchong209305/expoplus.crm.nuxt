@@ -22,7 +22,7 @@
                     </button>
                 </form>
                 
-                <div v-if="can('campaign.assign')">
+                <div v-if="can('campaign.assigned')">
                     <button class="border border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white text-sm rounded-lg py-1 px-3 transition-all" @click="assigned"><i class="ti ti-user-share me-1"></i> Giao cho </button>
                 </div>
 

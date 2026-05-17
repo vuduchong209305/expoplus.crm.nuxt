@@ -92,7 +92,7 @@
                             </div>
                             <!-- Menu Items -->
                             <div class="py-2">
-                                <NuxtLink to="/profile" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-800 hover:bg-gray-100 hover:text-indigo-700 transition-all">
+                                <NuxtLink to="/auth/profile" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-800 hover:bg-gray-100 hover:text-indigo-700 transition-all">
                                     <span>Hồ sơ</span>
                                 </NuxtLink>
                             </div>
@@ -149,23 +149,33 @@
     const { user } = useAuth()
     const menus = [
         {
-            name: 'Ngày của tôi',
-            icon: 'ti ti-layout-dashboard',
+            name: 'Trang chủ',
+            icon: 'ti ti-dashboard',
             to: '/',
-            permission: 'todo.index'
+            permission: 'index'
         },
         {
-            name: 'Công việc',
-            icon: 'ti ti-list-check',
-            to: '/task',
-            permission: 'task.index'
+            name: 'Bàn làm việc',
+            icon: 'ti ti-briefcase',
+            children: [
+                {
+                    name: 'Việc cần làm',
+                    to: '/desk/todo',
+                    permission: 'todo.index'
+                },
+                {
+                    name: 'Công việc',
+                    to: '/desk/task',
+                    permission: 'task.index'
+                },
+                {
+                    name: 'Lịch của tôi',
+                    to: '/desk/calendar',
+                    permission: 'event.index'
+                },
+            ]
         },
-        {
-            name: 'Lịch của tôi',
-            icon: 'ti ti-calendar',
-            to: '/calendar',
-            permission: 'event.index'
-        },
+        
         {
             name: 'Khách hàng',
             icon: 'ti ti-users',
