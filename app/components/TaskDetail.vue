@@ -169,7 +169,7 @@
         endPicker = flatpickr(endRef.value!, {
             locale: 'vn',
             dateFormat: 'Y-m-d',
-            minDate: 'today',
+            // minDate: 'today',
             onChange: (dates) => {
                 if (dates.length) {
                     form.end_date.value = formatDate(dates[0])
@@ -180,7 +180,7 @@
         startPicker = flatpickr(startRef.value!, {
             locale: 'vn',
             dateFormat: 'Y-m-d',
-            minDate: 'today',
+            // minDate: 'today',
             onChange: (dates) => {
                 if (dates.length) {
                     form.start_date.value = formatDate(dates[0])
@@ -195,14 +195,10 @@
         endPicker = flatpickr(endRef.value!, {
             locale: 'vn',
             dateFormat: 'Y-m-d',
-            minDate: 'today',
-
+            // minDate: 'today',
             onChange: (dates) => {
-
                 if (dates.length) {
-
                     form.end_date = formatDate(dates[0])
-
                 }
             }
         })
@@ -210,16 +206,11 @@
         startPicker = flatpickr(startRef.value!, {
             locale: 'vn',
             dateFormat: 'Y-m-d',
-            minDate: 'today',
-
+            // minDate: 'today',
             onChange: (dates) => {
-
                 if (dates.length) {
-
                     form.start_date = formatDate(dates[0])
-
                 }
-
                 endPicker.set('minDate', dates[0])
             }
         })
