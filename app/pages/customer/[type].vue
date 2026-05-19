@@ -3,9 +3,9 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
                 <h1 class="text-lg sm:text-xl font-semibold">Quản lý khách hàng</h1>
-                <p class="text-sm text-gray-500 mt-0.5">{{ type === 'lead' ? 'Danh sách Lead' : 'Danh sách Contact' }}</p>
+                <p class="text-sm text-gray-500 mt-0.5">Danh sách {{ type }}</p>
             </div>
-            <NuxtLink to="/customer/create" class="px-4 py-2 text-sm font-medium bg-white text-black border border-gray-500 rounded-lg hover:bg-black hover:text-white hover:border-white active:scale-95 transition-all"><i class="ti ti-plus me-2"></i>Thêm khách hàng </NuxtLink>
+            <NuxtLink :to="`/customer/create?type=${type}`" class="px-4 py-2 text-sm font-medium bg-white text-black border border-gray-500 rounded-lg hover:bg-black hover:text-white hover:border-white active:scale-95 transition-all"><i class="ti ti-plus me-2"></i>Thêm khách hàng </NuxtLink>
         </div>
     </div>
 

@@ -3,7 +3,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
                 <h1 class="text-lg sm:text-xl font-semibold">Thêm khách hàng mới</h1>
-                <p class="text-sm text-gray-500 mt-0.5">Danh sách Lead</p>
+                <p class="text-sm text-gray-500 mt-0.5">Thêm mới {{ route.query.type }}</p>
             </div>
         </div>
     </div>
@@ -113,13 +113,15 @@
         middleware: ['auth'],
     });
 
+    const route = useRoute()
+
     const fullname = ref('')
     const email = ref('')
     const phone = ref('')
     const birthday = ref('')
     const gender = ref('')
     const contact = ref('')
-    const type_id = ref(1)
+    const type_id = computed(() => route.query.type === 'lead' ? 1 : 2)
     const assigned_to = ref('')
 
     const company = ref('')

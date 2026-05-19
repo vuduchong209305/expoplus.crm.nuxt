@@ -10,6 +10,10 @@
     </div>
 
     <div class="p-4 lg:p-6">
+	    <TaskTimeline :tasks="tasks" @openTask="openTask"/>
+    </div>
+    
+    <div class="p-4 lg:p-6">
     	<div class="bg-white p-4 rounded-lg border">
 		    <!-- HEADER -->
 		    <div class="grid grid-cols-12 text-sm font-semibold text-gray-500 pb-3 border-b mb-2">
@@ -260,6 +264,10 @@
 	            tasks: sorted
 	        }
 	    })
+	}
+
+	const openEditor = async(data) => {
+		open.value = true
 	}
 
 	onMounted(() => {

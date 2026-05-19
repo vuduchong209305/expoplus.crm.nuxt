@@ -27,9 +27,9 @@
                 </button>
                 <!-- Center Nav Links -->
                 <nav class="hidden lg:flex items-center gap-1 ml-4">
-                    <NuxtLink to="/" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Ngày của tôi</NuxtLink>
-                    <NuxtLink to="/task" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Công việc</NuxtLink>
-                    <NuxtLink to="/calendar" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Lịch của tôi</NuxtLink>
+                    <NuxtLink to="/desk/todo" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Việc cần làm</NuxtLink>
+                    <NuxtLink to="/desk/task" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Công việc</NuxtLink>
+                    <NuxtLink to="/desk/calendar" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Lịch của tôi</NuxtLink>
                     <NuxtLink to="/marketing/campaign" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Chiến dịch</NuxtLink>
                     <NuxtLink to="/contract/quotation" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all">Báo giá</NuxtLink>
                 </nav>
