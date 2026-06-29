@@ -158,7 +158,7 @@
 	        			<table class="w-full text-sm">
 						    <tbody>
 						        <tr>
-						            <td class="py-3 pr-4 text-gray-500 w-40"> Nhóm đối tượng </td>
+						            <td class="py-3 pr-4 text-gray-500 w-40"> Lĩnh vực </td>
 						            <td class="py-3 font-medium text-gray-900"> <Editable v-model="customer.careers" type="select" :multiple="true" field="careers" @save="handleSave" :options="careers" class="w-full"/> </td>
 						        </tr>
 						    </tbody>
@@ -167,7 +167,7 @@
 						<table class="w-full text-sm">
 						    <tbody>
 						        <tr>
-						            <td class="py-3 pr-4 text-gray-500 w-40"> Lĩnh vực </td>
+						            <td class="py-3 pr-4 text-gray-500 w-40"> Nhóm đối tượng </td>
 						            <td class="py-3 font-medium text-gray-900"> <Editable v-model="customer.stakeholders" type="select" :multiple="true" field="stakeholders" @save="handleSave" :options="stakeholders" class="w-full"/> </td>
 						        </tr>
 						    </tbody>
