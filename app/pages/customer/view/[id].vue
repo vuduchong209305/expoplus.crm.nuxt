@@ -176,9 +176,7 @@
 	        	</div>
 
 	        	<div class="bg-white px-5 py-4 rounded mb-3">
-
 	        		<h3 class="font-semibold text-lg pb-3">Thông tin mô tả</h3>
-
 		        	<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 	        			<table class="w-full text-sm">
 						    <tbody>
@@ -201,9 +199,7 @@
 	        	</div>
 
 	        	<div class="bg-white px-5 py-4 rounded mb-3">
-
 	        		<h3 class="font-semibold text-lg pb-3">Thông tin hệ thống</h3>
-
 		        	<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 	        			
 						<table class="w-full text-sm">
@@ -214,7 +210,7 @@
 						        </tr>
 						        <tr>
 						            <td class="py-3 pr-4 text-gray-500 w-40"> Người tạo </td>
-						            <td class="py-3 font-medium text-gray-900"> {{ customer?.owner?.fullname }} </td>
+						            <td class="py-3 font-medium text-gray-900"> {{ customer?.owner?.fullname ?? 'N/A' }} </td>
 						        </tr>
 						        <tr>
 						        	<td class="py-3 pr-4 text-gray-500 w-40"> Ban tổ chức </td>
