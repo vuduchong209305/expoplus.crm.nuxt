@@ -22,8 +22,10 @@
                     </button>
                 </form>
                 
-                <div v-if="can('campaign.assigned')">
-                    <button class="border border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white text-sm rounded-lg py-1 px-3 transition-all" @click="assigned"><i class="ti ti-user-share me-1"></i> Giao cho </button>
+                <div class="flex gap-2">
+                    <button v-if="checkbox.length > 0" type="button" class="border border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded-lg py-1 px-3 text-sm transition-all" @click="deleteData"><i class="ti ti-trash"></i></button>
+
+                    <button v-if="can('campaign.assigned')" class="border border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white text-sm rounded-lg py-1 px-3 transition-all" @click="assigned"><i class="ti ti-user-share me-1"></i> Giao cho </button>
                 </div>
 
             </div>
@@ -68,7 +70,7 @@
                                                 <i class="ti ti-edit"></i>&nbsp;&nbsp;Sửa
                                             </NuxtLink>
                                         </li>
-                                        <li class="px-4 py-2 text-red-500 hover:bg-red-500/10 cursor-pointer text-sm" @click="deleteItem(item.id)"><i class="ti ti-trash"></i>&nbsp;&nbsp;Xóa</li>
+                                        <li class="px-4 py-2 text-red-500 hover:bg-red-500/10 cursor-pointer text-sm" @click="deleteData(item.id)"><i class="ti ti-trash"></i>&nbsp;&nbsp;Xóa</li>
                                     </ul>
                                 </div>
                             </div>
@@ -83,7 +85,7 @@
                         </td>
 
                         <td class="p-3">
-                            <span class="text-gray-500 text-sm">{{ item?.detail_count ?? 0 }}</span>
+                            <span class="text-gray-500 text-sm">{{ item?.details_count ?? 0 }}</span>
                         </td>
 
                         <td class="p-3">
@@ -188,7 +190,7 @@
         fetch()
     }
 
-    async function deleteItem(id) {
+    async function deleteData(id) {
 
         Swal.fire({
             title: "Xóa dữ liệu",
@@ -201,6 +203,11 @@
             cancelButtonText: "Đóng"
         }).then(async (result) => {
             if (result.isConfirmed) {
+
+                if(id.length == undefined) {
+                    id = checkbox.value.map(i => i.id)
+                }
+
                 const res = await useNuxtApp().$apiFetch(`campaign/delete`, {
                     method: 'POST',
                     body: {

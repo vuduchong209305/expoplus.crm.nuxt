@@ -12,7 +12,7 @@
     <div class="p-4 lg:p-6">
 
         <div class="bg-white p-4 rounded-lg mb-3 border">
-            <div class="flex flex-wrap items-center gap-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
                 
                 <form @submit.prevent="submitSearch" class="relative w-80">
                     <input v-model="search" placeholder="Tìm tên, email, số điện thoại..." class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
@@ -21,7 +21,8 @@
                         <i class="ti ti-search text-lg"></i>
                     </button>
                 </form>
-                
+
+                <button v-if="checkbox.length > 0" type="button" class="border border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded-lg px-2 py-1 transition-all" @click="deleteData"><i class="ti ti-trash"></i></button>
             </div>
 
         </div>
@@ -65,7 +66,7 @@
                                             </NuxtLink>
                                         </li>
                                         <!-- <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm"><i class="ti ti-calendar"></i>&nbsp;&nbsp;Tạo lịch</li> -->
-                                        <li class="px-4 py-2 text-red-500 hover:bg-red-500/10 cursor-pointer text-sm" @click="deleteItem(item?.id)"><i class="ti ti-trash"></i>&nbsp;&nbsp;Xóa</li>
+                                        <li class="px-4 py-2 text-red-500 hover:bg-red-500/10 cursor-pointer text-sm" @click="deleteData(item?.id)"><i class="ti ti-trash"></i>&nbsp;&nbsp;Xóa</li>
                                     </ul>
                                 </div>
                             </div>
@@ -170,7 +171,7 @@
         }
     }
 
-    async function deleteItem(id) {
+    async function deleteData(id) {
 
         Swal.fire({
             title: "Xóa dữ liệu",
@@ -183,6 +184,11 @@
             cancelButtonText: "Đóng"
         }).then(async (result) => {
             if (result.isConfirmed) {
+
+                if(id.length == undefined) {
+                    id = checkbox.value.map(i => i.id)
+                }
+                
                 const res = await useNuxtApp().$apiFetch(`customer-group/delete`, {
                     method: 'POST',
                     body: {
