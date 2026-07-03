@@ -184,7 +184,7 @@
 	                        </td>
 
 	                        <td class="p-3">
-	                            <span class="text-gray-500 text-sm">{{ formatMoney(item?.price) }}</span>
+	                            <input type="text" :value="formatMoney(item.price)" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-indigo-500 transition-colors" @keydown="preventInvalidKey" @blur="onPriceBlur(item)" @input="(e) => handleMoneyInput(e, (val) => item.price = val)">
 	                        </td>
 
 	                        <td class="p-3">
@@ -562,6 +562,12 @@
 	const onQtyBlur = (item) => {
 	    if (!item.qty || item.qty < 1) {
 	        item.qty = 1
+	    }
+	}
+	
+	const onPriceBlur = (item) => {
+	    if (!item.price || item.price < 1) {
+	        item.price = 1
 	    }
 	}
 

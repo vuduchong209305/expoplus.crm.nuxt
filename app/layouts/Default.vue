@@ -168,11 +168,11 @@
                     to: '/desk/task',
                     permission: 'task.index'
                 },
-                {
-                    name: 'Lịch của tôi',
-                    to: '/desk/calendar',
-                    permission: 'event.index'
-                },
+                // {
+                //     name: 'Lịch của tôi',
+                //     to: '/desk/calendar',
+                //     permission: 'event.index'
+                // },
             ]
         },
         

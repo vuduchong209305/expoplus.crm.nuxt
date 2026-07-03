@@ -10,7 +10,7 @@
         </div>
     </div>
     <!-- CONTENT -->
-    <div class="p-4 sm:p-6 pb-28">
+    <div class="p-4 sm:p-6 mb-20">
         <div class="space-y-6">
             <!-- TODO LIST -->
             <div>

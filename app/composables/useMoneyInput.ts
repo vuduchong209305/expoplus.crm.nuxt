@@ -22,12 +22,13 @@ export const useMoneyInput = () => {
         e: Event,
         callback: (value: number) => void
     ) => {
+        const input = e.target as HTMLInputElement
 
-        const target = e.target as HTMLInputElement
+        const value = input.value.replace(/\D/g, '')
 
-        const raw = target.value.replace(/\D/g, '')
+        callback(Number(value || 0))
 
-        callback(Number(raw || 0))
+        input.value = formatMoney(value)
     }
 
     return {

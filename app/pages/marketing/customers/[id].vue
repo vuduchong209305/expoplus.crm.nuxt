@@ -10,7 +10,7 @@
 
     <div class="p-4 lg:p-6">
 
-    	<form @submit.prevent="submit">
+    	<form>
 
 	    	<div class="bg-white px-5 py-4 rounded mb-5">
 	    		<h4 class="font-semibold text-md pb-3">Thông tin chung</h4>
@@ -42,7 +42,7 @@
 				        <hr class="my-5">
 
 				        <div class="max-h-[700px] overflow-y-auto space-y-2">
-				            <div v-for="item in availableCustomers" :key="item.id" class="flex items-center justify-between px-3 py-2 border border-indigo-200 rounded cursor-pointer hover:bg-indigo-50">
+				            <div v-for="item in availableCustomers" :key="item.id" class="flex items-center justify-between px-3 py-2 border border-indigo-200 rounded cursor-pointer hover:bg-slate-100">
 				            	<div class="flex items-center justify-between">
 				            		<img :src="viewImage(item.avatar)" class="w-10 h-10 rounded-full" :alt="item.fullname">
 				            		&nbsp;&nbsp;
@@ -69,7 +69,7 @@
 				        <h5 class="font-semibold mb-3">Đã chọn ({{ selected.length }})</h5>
 				        <div v-if="selected.length === 0" class="text-sm text-gray-400"> Chưa có khách hàng nào </div>
 				        <div class="max-h-[700px] overflow-y-auto space-y-2">
-				            <div v-for="item in selected" :key="item.id" class="flex items-center justify-between px-3 py-2 border rounded bg-indigo-50">
+				            <div v-for="item in selected" :key="item.id" class="flex items-center justify-between px-3 py-2 border rounded bg-slate-50 group">
 				                <div class="flex items-center justify-between">
 				            		<img :src="viewImage(item.avatar)" class="w-10 h-10 rounded-full" :alt="item.fullname">
 				            		&nbsp;&nbsp;
@@ -78,14 +78,14 @@
 					                    <div class="text-xs text-gray-500">{{ item.email }}</div>
 					                </div>
 				            	</div>
-				                <button type="button" @click="removeCustomer(item.id)" class="text-xs px-2 py-1 rounded border border-red-500 text-red-500 hover:bg-red-500 hover:text-white"> <i class="ti ti-trash"></i> </button>
+				                <button type="button" @click="removeCustomer(item.id)" class="text-xs px-2 py-1 rounded border border-red-500 text-red-500 hover:bg-red-500 hover:text-white hidden group-hover:block"> <i class="ti ti-trash"></i> </button>
 				            </div>
 				        </div>
 				    </div>
 				</div>
 	    	</div>
 
-	    	<button type="submit" class="px-6 py-2 active:scale-95 transition bg-blue-500 rounded text-white text-sm font-medium">
+	    	<button @click="submit" type="button" class="px-6 py-2 active:scale-95 transition bg-blue-500 rounded text-white text-sm font-medium">
                 Lưu dữ liệu
             </button>
 	    </form>

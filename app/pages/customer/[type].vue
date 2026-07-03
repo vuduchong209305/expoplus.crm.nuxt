@@ -3,7 +3,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
                 <h1 class="text-lg sm:text-xl font-semibold">Quản lý khách hàng</h1>
-                <p class="text-sm text-gray-500 mt-0.5">Danh sách {{ type }}</p>
+                <p class="text-sm text-slate-800 mt-0.5">Danh sách <span class="uppercase font-bold">{{ type }}</span></p>
             </div>
             <NuxtLink :to="`/customer/create?type=${type}`" class="px-4 py-2 text-sm font-medium bg-white text-black border border-gray-500 rounded-lg hover:bg-black hover:text-white hover:border-white active:scale-95 transition-all"><i class="ti ti-plus me-2"></i>Thêm khách hàng </NuxtLink>
         </div>
@@ -29,9 +29,14 @@
                     <button @click="resetFilter" class="px-3 py-2 text-sm text-red-500"> Reset </button>
                 </div>
                 
-                <div v-if="can('customer.assigned')">
-                    <button class="border border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white text-sm rounded-lg py-1 px-3 transition-all" @click="assigned"><i class="ti ti-user-share me-1"></i>Giao cho</button>
+                <div class="flex gap-2">
+                    <button class="border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white text-sm rounded-lg py-1 px-3 transition-all" @click="updateBulk"><i class="ti ti-edit me-1"></i>Cập nhật hàng loạt</button>
+
+                    <div v-if="can('customer.assigned')">
+                        <button class="border border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white text-sm rounded-lg py-1 px-3 transition-all" @click="assigned"><i class="ti ti-user-share me-1"></i>Giao cho</button>
+                    </div>
                 </div>
+                
             </div>
             
         </div>
@@ -77,7 +82,7 @@
                                     <!-- Menu -->
                                     <ul class="dropdown-menu hidden absolute mt-2 w-40 bg-white border rounded shadow-md py-1 z-50">
                                         <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm" @click="selectedCustomer = customer; openCustomer(customer)"><i class="ti ti-eye"></i>&nbsp;&nbsp;Xem nhanh</li>
-                                        <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm"><i class="ti ti-calendar"></i>&nbsp;&nbsp;Tạo lịch</li>
+                                        <!-- <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm"><i class="ti ti-calendar"></i>&nbsp;&nbsp;Tạo lịch</li> -->
                                         <li class="px-4 py-2 text-red-500 hover:bg-red-500/10 cursor-pointer text-sm" @click="deleteItem(customer?.id)"><i class="ti ti-trash"></i>&nbsp;&nbsp;Xóa</li>
                                     </ul>
                                 </div>
@@ -122,7 +127,8 @@
     <Offcanvas :open="openCanvas" @close="openCanvas = false" :title="canvasTitle">
         <CustomerDetail v-if="canvasType === 'customer'" :customer="selectedCustomer" />
         <FilterBuilder v-else-if="canvasType === 'filter'" />
-        <AssignedTo v-else-if="canvasType === 'assigned'" :customers="checkbox" @saved="handleSave" @close="closeCanvas" />
+        <AssignedTo v-else-if="canvasType === 'assigned'" @saved="handleSave" @close="closeCanvas" />
+        <UpdateBulk v-else-if="canvasType === 'updateBulk'" @saved="handleSaveBulk" @close="closeCanvas" />
     </Offcanvas>
 
 </template>
@@ -193,6 +199,19 @@
         }
 
         canvasType.value = 'assigned'
+        openCanvas.value = true
+    }
+
+    const updateBulk = () => {
+        if(checkbox.value.length == 0) {
+            notify.error({
+                title: 'Thông báo',
+                description: 'Vui lòng chọn dữ liệu'
+            })
+            return
+        }
+
+        canvasType.value = 'updateBulk'
         openCanvas.value = true
     }
 
@@ -322,6 +341,39 @@
         }
     }
 
+    const handleSaveBulk = async(data) => {
+        if(checkbox.value.length == 0) {
+            notify.error({
+                title: 'Thông báo',
+                description: 'Vui lòng chọn khách hàng'
+            })
+            return
+        }
+
+        const res = await useNuxtApp().$apiFetch(`customer/updateBulk`, {
+            method: 'POST',
+            body: {
+                type_id: data.type_id,
+                bookmark: data.bookmark,
+                ids: checkbox.value.map(i => i.id)
+            }
+        })
+
+        if (res.status) {
+            notify.success({
+                title: 'Thông báo',
+                description: res.message
+            })
+            openCanvas.value = false
+            fetch(route.query.page)
+        } else {
+            notify.error({
+                title: 'Thông báo',
+                description: res.message
+            })
+        }
+    }
+
     const closeCanvas = () => {
         openCanvas.value = false
     }
@@ -334,6 +386,8 @@
                 return 'Bộ lọc'
             case 'assigned':
                 return 'Giao cho người phụ trách'
+            case 'updateBulk':
+                return 'Cập nhật hàng loạt'
             default:
                 return '#'
         }

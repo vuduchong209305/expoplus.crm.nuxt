@@ -1,5 +1,5 @@
 <template>
-    <div id="print-area" class="a4-page text-[13px] text-gray-800">
+    <div id="print-area" class="a4-page text-[13px]">
         <!-- HEADER -->
         <div class="flex justify-between items-start border-b pb-4">
             <!-- LEFT: COMPANY -->
@@ -17,26 +17,26 @@
         <!-- TITLE -->
         <div class="text-center my-10">
             <h1 class="text-2xl font-bold uppercase">PHIẾU BÁO GIÁ</h1>
-            <p class="text-sm text-gray-500">Mã: {{ quotation?.code }}</p>
+            <p class="text-sm">Mã: {{ quotation?.code }}</p>
         </div>
 
         <!-- CUSTOMER -->
-        <div class="mb-5 text-[13px] text-gray-700 leading-6">
+        <div class="mb-5 text-[13px] leading-6">
 
             <div class="flex flex-wrap gap-x-8 gap-y-1">
 
                 <div>
-                    <span class="text-gray-400">Triển lãm: </span>
+                    <span>Triển lãm: </span>
                     <span class="font-medium">{{ exhibition?.title }}</span>
                 </div>
 
                 <div>
-                    <span class="text-gray-400">Thời gian: </span>
+                    <span>Thời gian: </span>
                     {{ exhibition?.start_date }} <i class="ti ti-arrow-right"></i> {{ exhibition?.end_date }}
                 </div>
 
                 <div>
-                    <span class="text-gray-400">Địa điểm:</span>
+                    <span>Địa điểm:</span>
                     {{ exhibition?.location }}
                 </div>
 
@@ -45,23 +45,23 @@
             <div class="border-t my-3"></div>
 
             <div>
-                <span class="text-gray-400">Khách hàng: </span>
+                <span>Khách hàng: </span>
                 <span class="font-medium">{{ customer?.company || '-' }}</span>
             </div>
 
             <div class="flex flex-wrap justify-between gap-x-8 gap-y-1">
                 <div>
-                    <span class="text-gray-400">Họ tên: </span>
+                    <span>Họ tên: </span>
                     {{ customer?.fullname }}
                 </div>
 
                 <div>
-                    <span class="text-gray-400">SĐT: </span>
+                    <span>SĐT: </span>
                     {{ customer?.phone }}
                 </div>
 
                 <div>
-                    <span class="text-gray-400">Email: </span>
+                    <span>Email: </span>
                     {{ customer?.email }}
                 </div>
             </div>

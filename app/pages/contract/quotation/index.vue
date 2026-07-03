@@ -12,7 +12,7 @@
     <div class="p-4 lg:p-6">
 
         <div class="bg-white p-4 rounded-lg mb-3 border">
-        	<div class="flex flex-wrap items-center gap-2">
+        	<div class="flex flex-wrap items-center justify-between gap-2">
                 
                 <form @submit.prevent="submitSearch" class="relative w-80">
                     <input v-model="search" placeholder="Tìm mã báo giá, khách hàng, triển lãm..." class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
@@ -22,6 +22,7 @@
                     </button>
                 </form>
                 
+                <button v-if="checkbox.length > 0" type="button" class="border border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded-lg px-2 py-1 transition-all" @click="deleteData"><i class="ti ti-trash"></i></button>
             </div>
         </div>
 
@@ -31,7 +32,7 @@
                 <thead class="border-b">
                     <tr>
                         <th class="p-3 text-left w-12" width="5%">
-                            <input type="checkbox" class="w-4 h-4 rounded">
+                            <input type="checkbox" class="w-4 h-4 rounded" :checked="isAllSelected" @change="toggleAll">
                         </th>
                         <th class="p-3 text-sm text-center font-medium" width="5%">#</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Mã báo giá</th>
@@ -46,7 +47,7 @@
                     <tr v-for="(item, index) in quotations" :key="index" class="border-b hover:bg-gray-100 transition-all">
 
                         <td class="p-3">
-                            <input type="checkbox" class="w-4 h-4 rounded">
+                            <input type="checkbox" class="w-4 h-4 rounded" :checked="isChecked(item)" @change="toggleItem(item)">
                         </td>
 
                         <td class="p-3">
@@ -63,7 +64,7 @@
                                                 <i class="ti ti-edit"></i>&nbsp;&nbsp;Sửa
                                             </NuxtLink>
                                         </li>
-                                        <li class="px-4 py-2 text-red-500 hover:bg-red-500/10 cursor-pointer text-sm" @click="deleteItem(item.id)"><i class="ti ti-trash"></i>&nbsp;&nbsp;Xóa</li>
+                                        <li class="px-4 py-2 text-red-500 hover:bg-red-500/10 cursor-pointer text-sm" @click="deleteData(item.id)"><i class="ti ti-trash"></i>&nbsp;&nbsp;Xóa</li>
                                     </ul>
                                 </div>
                             </div>
@@ -129,6 +130,14 @@
     const quotations = ref([])
     const search = ref('')
 
+    const {
+        selected: checkbox,
+        toggleItem,
+        toggleAll,
+        isAllSelected,
+        isChecked
+    } = useCheckboxTable(quotations)
+
     watch(() => route.query.page, (page) => {
         fetch(Number(page) || 1)
     }, { immediate: true })
@@ -157,7 +166,7 @@
         }
     }
 
-    async function deleteItem(id) {
+    async function deleteData(id) {
 
         Swal.fire({
             title: "Xóa dữ liệu",
@@ -170,6 +179,11 @@
             cancelButtonText: "Đóng"
         }).then(async (result) => {
             if (result.isConfirmed) {
+
+                if(id.length == undefined) {
+                    id = checkbox.value.map(i => i.id)
+                }
+
                 const res = await useNuxtApp().$apiFetch(`quotation/delete`, {
                     method: 'POST',
                     body: {

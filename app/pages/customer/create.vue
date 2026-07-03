@@ -3,8 +3,10 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
                 <h1 class="text-lg sm:text-xl font-semibold">Thêm khách hàng mới</h1>
-                <p class="text-sm text-gray-500 mt-0.5">Thêm mới {{ route.query.type }}</p>
+                <p class="text-sm text-gray-700 mt-0.5">Thêm mới <span class="font-bold uppercase">{{ route.query.type }}</span></p>
             </div>
+
+            <NuxtLink to="/customer/import" class="px-4 py-2 text-sm font-medium bg-white text-black border border-gray-500 rounded-lg hover:bg-black hover:text-white hover:border-white active:scale-95 transition-all"><i class="ti ti-file-type-xls me-2"></i>Thêm hàng loạt </NuxtLink>
         </div>
     </div>
 

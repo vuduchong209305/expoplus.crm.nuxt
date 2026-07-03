@@ -13,7 +13,20 @@
 				    <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleFile" />
 				</div>
 			    <div>
-			    	<h1 class="text-lg sm:text-xl font-semibold">{{ customer?.fullname }}</h1>
+			    	<div class="flex items-center gap-2">
+			    		<h1 class="text-lg sm:text-xl font-semibold">
+					    	{{ customer?.fullname }}
+					    </h1>
+
+					    <span :class="[
+						        'inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold',
+						        customerType.class
+						    ]">
+						    {{ customerType.text }}
+						</span>
+			    		
+			    	</div>
+			    	
                 	<p class="text-sm text-gray-500 mt-0.5">{{ customer?.company }}</p>
 			    </div>
             </div>
@@ -32,9 +45,9 @@
 				    </button>
 				    <!-- DROPDOWN -->
 				    <ul class="dropdown-menu hidden absolute right-0 top-full mt-2 w-40 bg-white border border-gray-300 rounded shadow-md py-1 z-50">
-				        <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm" @click="handleCreate">
+				        <!-- <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm" @click="handleCreate">
 				            <i class="ti ti-calendar"></i>&nbsp;&nbsp;Tạo lịch
-				        </li>
+				        </li> -->
 				        <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm" @click="open = true">
 				            <i class="ti ti-library-plus"></i>&nbsp;&nbsp;Thêm vào nhóm
 				        </li>
@@ -390,6 +403,20 @@
         getActivityLogs(Number(page) || 1)
     }, { immediate: true })
 
+    const customerType = computed(() => {
+	    if (customer.value?.type_id == 1) {
+	        return {
+	            text: 'Lead',
+	            class: 'bg-orange-100 text-orange-700'
+	        }
+	    }
+
+	    return {
+	        text: 'Contact',
+	        class: 'bg-green-100 text-green-700'
+	    }
+	})
+
 	async function view() {
 
         const res = await useNuxtApp().$apiFetch(`customer/view?id=${id}`)
@@ -617,6 +644,7 @@
 
         if (res.status) {
         	getComments()
+        	content.value = null
             notify.success({
                 title: 'Thông báo',
                 description: res.message

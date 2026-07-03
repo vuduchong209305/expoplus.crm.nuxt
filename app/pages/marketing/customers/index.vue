@@ -32,10 +32,11 @@
                 <thead class="border-b">
                     <tr>
                         <th class="p-3 text-left w-12" width="5%">
-                            <input type="checkbox" class="w-4 h-4 rounded">
+                            <input type="checkbox" class="w-4 h-4 rounded" :checked="isAllSelected" @change="toggleAll">
                         </th>
+                        <th class="p-3 text-sm text-left font-medium" width="5%">#</th>
                         <th class="p-3 text-sm text-left font-medium" width="20%">Nhóm khách hàng</th>
-                        <th class="p-3 text-sm text-left font-medium" width="35%">Ghi chú</th>
+                        <th class="p-3 text-sm text-left font-medium" width="30%">Ghi chú</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Giao cho</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Số lượng KH</th>
                         <th class="p-3 text-sm text-left font-medium" width="10%">Ngày tạo</th>
@@ -46,7 +47,28 @@
                     <tr v-for="(item, index) in data" :key="index" class="border-b hover:bg-gray-100 transition-all">
 
                         <td class="p-3">
-                            <input type="checkbox" class="w-4 h-4 rounded">
+                            <input type="checkbox" class="w-4 h-4 rounded" :checked="isChecked(item)" @change="toggleItem(item)">
+                        </td>
+
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <div class="dropdown relative">
+                                    <!-- Trigger -->
+                                    <button class="dropdown-btn px-1 border rounded-full bg-white text-gray-700 border-gray-200">
+                                        <i class="ti ti-dots-vertical text-gray-400"></i>
+                                    </button>
+                                    <!-- Menu -->
+                                    <ul class="dropdown-menu hidden absolute mt-2 w-40 bg-white border rounded shadow-md py-1 z-50">
+                                        <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm">
+                                            <NuxtLink :to="`/marketing/customers/${item.id}`">
+                                                <i class="ti ti-edit"></i>&nbsp;&nbsp;Sửa
+                                            </NuxtLink>
+                                        </li>
+                                        <!-- <li class="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-sm"><i class="ti ti-calendar"></i>&nbsp;&nbsp;Tạo lịch</li> -->
+                                        <li class="px-4 py-2 text-red-500 hover:bg-red-500/10 cursor-pointer text-sm" @click="deleteItem(item?.id)"><i class="ti ti-trash"></i>&nbsp;&nbsp;Xóa</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </td>
 
                         <td class="p-3">
@@ -62,7 +84,7 @@
                         </td>
 
                         <td class="p-3">
-                            <span class="text-gray-500 text-sm">{{ item?.detail_count }}</span>
+                            <span class="text-gray-500 text-sm">{{ item?.details_count }}</span>
                         </td>
 
                         <td class="p-3">
@@ -94,6 +116,8 @@
 
 <script setup lang="ts">
     
+    import Swal from 'sweetalert2'
+    
     definePageMeta({
         middleware: ['auth'],
     })
@@ -108,6 +132,14 @@
     const route = useRoute()
     const data = ref([])
     const search = ref('')
+
+    const {
+        selected: checkbox,
+        toggleItem,
+        toggleAll,
+        isAllSelected,
+        isChecked
+    } = useCheckboxTable(data)
 
     watch(() => route.query.page, async (page) => {
         await fetch(Number(page) || 1)
@@ -136,6 +168,43 @@
                 description: res.message
             })
         }
+    }
+
+    async function deleteItem(id) {
+
+        Swal.fire({
+            title: "Xóa dữ liệu",
+            text: "Bạn chắc chắn muốn xóa dữ liệu này",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Đóng"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const res = await useNuxtApp().$apiFetch(`customer-group/delete`, {
+                    method: 'POST',
+                    body: {
+                        id
+                    }
+                })
+
+                if (res.status) {
+                    notify.success({
+                        title: 'Thông báo',
+                        description: res.message
+                    })
+
+                    fetch(route.query.page)
+                } else {
+                    notify.error({
+                        title: 'Thông báo',
+                        description: res.message
+                    })
+                }
+            }
+        });
     }
 
     async function submitSearch() {
